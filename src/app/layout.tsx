@@ -1,29 +1,30 @@
 import type { Metadata } from "next";
 import { Roboto_Condensed } from "next/font/google";
+import Navbar from "./_components/navbar";
 import "./globals.css";
 
 const robotoCondensed = Roboto_Condensed({
-    subsets: ["latin"],
-    weight: ["100", "300", "400", "700"],
-    variable: "--font-roboto-condensed",
+  subsets: ["latin"],
+  weight: ["100", "300", "400", "700"],
+  variable: "--font-roboto-condensed",
 });
 
 export const metadata: Metadata = {
-    title: "AuditPH - Coming Soon",
-    description:
-        "AuditPH is an intuitive and powerful expense tracker web application built for small businesses and individuals to manage finances effortlessly. Track multiple wallets, categorize transactions, monitor income and expenses, and gain clear insights into your spending habits. Whether you're a business owner or just managing your personal budget, AuditPH helps you stay on top of your financial goals with real-time analytics, budgeting tools, and seamless record-keeping.",
+  title: "Audit PH",
+  description: "A digital archive for all articles of Today's Carolinian",
 };
 
 export default function RootLayout({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    return (
-        <html lang="en" className="dark">
-            <body className={`${robotoCondensed.variable} bg-[#F8F8F8]`}>
-                {children}
-            </body>
-        </html>
-    );
+  return (
+    <html lang="en" className="dark">
+      <body className={`${robotoCondensed.variable} bg-[#F8F8F8]`}>
+        <Navbar />
+        {children}
+      </body>
+    </html>
+  );
 }
