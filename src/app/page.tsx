@@ -20,20 +20,31 @@ export default function LoginPage() {
                                 height={1247}
                             />
                         </div>
-                        <span className="text-primary sr-only">AuditPH</span>
+                        <span className="sr-only text-neutral-900">
+                            AuditPH
+                        </span>
                     </Link>
-                    <h1 className="text-primary text-4xl font-bold">AuditPH</h1>
-                    <h2 className="text-primary text-2xl font-bold">
+                    <h1 className="text-4xl font-bold text-neutral-900">
+                        AuditPH
+                    </h1>
+                    <h2 className="text-2xl font-bold text-neutral-900">
                         Coming Soon
                     </h2>
-                    <span className="text-center">
+                    <span className="text-center text-neutral-900">
                         Our website is currently under construction. We&apos;re
                         working hard to create something amazing. Stay tuned!
                     </span>
-                    <Button size={"lg"}>Contact Us</Button>
+                    <Link href="mailto:n.peteros2003@gmail.com">
+                        <Button
+                            size={"lg"}
+                            className="bg-neutral-900 text-white hover:cursor-pointer hover:bg-black"
+                        >
+                            Contact Us
+                        </Button>
+                    </Link>
                 </div>
             </div>
-            <footer className="text-primary absolute bottom-4 text-sm">
+            <footer className="absolute bottom-4 text-sm text-neutral-900">
                 <p className="text-center">
                     Copyright &copy; {new Date().getFullYear()}, AuditPH. All
                     Rights Reserved.
