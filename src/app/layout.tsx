@@ -10,8 +10,9 @@ const robotoCondensed = Roboto_Condensed({
 });
 
 export const metadata: Metadata = {
-    title: "Audit PH",
-    description: "A digital archive for all articles of Today's Carolinian",
+    title: "AuditPH",
+    description:
+        "AuditPH is an intuitive and powerful expense tracker web application built for small businesses and individuals to manage finances effortlessly. Track multiple wallets, categorize transactions, monitor income and expenses, and gain clear insights into your spending habits. Whether you're a business owner or just managing your personal budget, AuditPH helps you stay on top of your financial goals with real-time analytics, budgeting tools, and seamless record-keeping.",
 };
 
 export default function RootLayout({
