@@ -50,7 +50,7 @@ export default function Navbar() {
                     <Image
                         src="/audit-black.png"
                         alt="AuditPH"
-                        className="max-h-24 max-w-24"
+                        className="max-h-20 max-w-20"
                         width={2000}
                         height={1247}
                     />
