@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+}
+
+enum TransactionType {
+    EXPENSE
+    INCOME
+}
+
+model User {
+    id           String        @id @default(uuid()) // Same UUID as Supabase Auth
+    email        String        @unique
+    createdAt    DateTime      @default(now())
+    wallets      Wallet[]
+    transactions Transaction[]
+    categories   Category[]
+}
+
+model Wallet {
+    id        Int      @id @default(autoincrement())
+    userId    String
+    name      String
+    balance   Decimal
+    createdAt DateTime @default(now())
+
+    user         User          @relation(fields: [userId], references: [id])
+    transactions Transaction[]
+    categories   Category[]
+
+    @@index([userId])
+}
+
+model Transaction {
+    id              Int      @id @default(autoincrement())
+    userId          String
+    walletId        Int
+    categoryId      Int
+    transactionDate DateTime
+    description     String?
+    amount          Decimal
+    createdAt       DateTime @default(now())
+
+    user     User     @relation(fields: [userId], references: [id])
+    wallet   Wallet   @relation(fields: [walletId], references: [id])
+    category Category @relation(fields: [categoryId], references: [id])
+
+    @@index([userId])
+    @@index([walletId])
+    @@index([categoryId])
+    @@index([transactionDate])
+}
+
+model Category {
+    id        Int             @id @default(autoincrement())
+    userId    String?
+    walletId  Int?
+    name      String
+    icon      String
+    type      TransactionType
+    createdAt DateTime        @default(now())
+
+    user         User?         @relation(fields: [userId], references: [id])
+    wallet       Wallet?       @relation(fields: [walletId], references: [id])
+    transactions Transaction[]
+
+    @@index([userId])
+    @@index([walletId])
+    @@index([type])
+}
