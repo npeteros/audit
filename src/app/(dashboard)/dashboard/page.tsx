@@ -137,15 +137,6 @@ export default function DashboardPage() {
     const incomeChange = calculateChange(current.income, previous.income);
     const expenseChange = calculateChange(current.expense, previous.expense);
     const balanceChange = calculateChange(current.balance, previous.balance);
-    console.log("CURR: ", current, "PREV: ", previous);
-    console.log(
-        "INCOME: ",
-        incomeChange,
-        "EXPENSE: ",
-        expenseChange,
-        "BALANCE: ",
-        balanceChange,
-    );
 
     return (
         <div className="space-y-6 p-4">
