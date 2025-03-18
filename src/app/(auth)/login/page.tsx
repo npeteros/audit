@@ -54,6 +54,7 @@ function LoginForm({
                                 <Image
                                     src="/audit-black.png"
                                     alt="AuditPH"
+                                    className="dark:invert"
                                     //   className="max-h-40 max-w-40"
                                     width={2000}
                                     height={1247}
