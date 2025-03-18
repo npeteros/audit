@@ -22,6 +22,10 @@ class TransactionService {
                     ...(filters.walletId && { walletId: filters.walletId }),
                     ...(filters.categoryId && { categoryId: filters.categoryId }),
                 },
+                include: {
+                    category: true,
+                    wallet: true
+                }
             });
 
             return transactions;

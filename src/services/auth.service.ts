@@ -13,7 +13,7 @@ class AuthService {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 throw new Error("Database request failed");
             }
-            throw new Error("An unexpected error occurred while fetching the user");
+            throw new Error(`An unexpected error occurred while fetching the user: ${error}`);
         }
     }
 

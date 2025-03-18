@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { Transaction } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime/library";
 
 export const AddTransactionSchema = z.object({
     userId: z.string({
@@ -62,6 +64,17 @@ export const DeleteTransactionSchema = z.object({
         invalid_type_error: "id must be a number.",
     }),
 });
+
+export type TransactionIncluded = Transaction & {
+    category: {
+        name: string;
+        icon: string;
+        type: string;
+    };
+    wallet: {
+        name: string;
+    }
+}
 
 export type AddTransactionPayload = z.infer<typeof AddTransactionSchema>;
 export type EditTransactionPayload = z.infer<typeof EditTransactionSchema>;
