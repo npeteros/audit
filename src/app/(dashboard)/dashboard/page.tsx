@@ -6,7 +6,6 @@ import { Banknote, MinusCircle, Plus, PlusCircle } from "lucide-react";
 import { useSession } from "@/hooks/useSession";
 import { TransactionIncluded } from "@/types/transactions.types";
 import RecentTransactionsTable from "../_components/recent-transactions-table";
-import { DatePickerWithRange } from "@/components/ui/date-picker";
 import {
     Card,
     CardContent,
@@ -18,6 +17,7 @@ import { Overview } from "../_components/overview";
 import { useEffect, useState } from "react";
 import { addDays, isAfter, isBefore, isEqual } from "date-fns";
 import { DateRange } from "react-day-picker";
+import Header from "../_components/header";
 
 interface MonthlySummary {
     income: number;
@@ -80,8 +80,13 @@ export default function DashboardPage() {
     useEffect(() => {
         if (!data?.transactions) return;
 
-        const filtered = data.transactions.filter(
-            (transaction: TransactionIncluded) => {
+        const filtered = data.transactions
+            .sort(
+                (a: TransactionIncluded, b: TransactionIncluded) =>
+                    new Date(b.transactionDate).getTime() -
+                    new Date(a.transactionDate).getTime(),
+            )
+            .filter((transaction: TransactionIncluded) => {
                 const transactionDate = new Date(transaction.transactionDate);
 
                 if (!dateRange?.from || !dateRange?.to) return true;
@@ -92,8 +97,7 @@ export default function DashboardPage() {
                     (isBefore(transactionDate, dateRange.to) ||
                         isEqual(transactionDate, dateRange.to))
                 );
-            },
-        );
+            });
 
         setFilteredTransactions(filtered);
     }, [data, dateRange]);
@@ -140,18 +144,11 @@ export default function DashboardPage() {
 
     return (
         <div className="space-y-6 p-4">
-            <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">Dashboard</h1>
-                <div className="flex items-center gap-2">
-                    <DatePickerWithRange
-                        value={dateRange}
-                        onChange={setDateRange}
-                    />
-                    <Button variant="default" className="cursor-pointer">
-                        Download
-                    </Button>
-                </div>
-            </div>
+            <Header
+                title="Dashboard"
+                date={dateRange}
+                onChange={setDateRange}
+            />
 
             <div className="grid gap-4 lg:grid-cols-3">
                 <Card>

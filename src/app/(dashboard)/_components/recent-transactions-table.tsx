@@ -44,78 +44,64 @@ export default function RecentTransactionsTable({
                         </TableCell>
                     </TableRow>
                 ) : transactions?.length ? (
-                    transactions
-                        ?.sort(
-                            (a, b) =>
-                                new Date(b.transactionDate).getTime() -
-                                new Date(a.transactionDate).getTime(),
-                        )
-                        .slice(0, 5)
-                        .map((txn) => (
-                            <Dialog key={txn.id}>
-                                <DialogTrigger asChild>
-                                    <TableRow className="hover:bg-muted cursor-pointer">
-                                        <TableCell>
-                                            {new Date(
-                                                txn.transactionDate,
-                                            ).toLocaleDateString("en-US", {
-                                                month: "long",
-                                                day: "numeric",
-                                                year: "numeric",
-                                            })}
-                                        </TableCell>
-                                        <TableCell className="font-medium">
-                                            {txn.category.name}
-                                        </TableCell>
-                                        <TableCell
-                                            className={`text-right ${
-                                                Number(txn.amount) > 0
-                                                    ? "text-green-600"
-                                                    : "text-red-600"
-                                            }`}
-                                        >
-                                            ₱ {Number(txn.amount).toFixed(2)}
-                                        </TableCell>
-                                    </TableRow>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>
-                                            Transaction Details
-                                        </DialogTitle>
-                                        <DialogDescription>
-                                            <p>
-                                                Category:{" "}
-                                                <strong>
-                                                    {txn.category.name}
-                                                </strong>
-                                            </p>
-                                            <p>
-                                                Date:{" "}
-                                                <strong>
-                                                    {new Date(
-                                                        txn.transactionDate,
-                                                    ).toLocaleDateString(
-                                                        "en-US",
-                                                        {
-                                                            month: "long",
-                                                            day: "numeric",
-                                                            year: "numeric",
-                                                        },
-                                                    )}
-                                                </strong>
-                                            </p>
-                                            <p>
-                                                Description:{" "}
-                                                <strong>
-                                                    {txn.description}
-                                                </strong>
-                                            </p>
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                </DialogContent>
-                            </Dialog>
-                        ))
+                    transactions?.slice(0, 5).map((txn) => (
+                        <Dialog key={txn.id}>
+                            <DialogTrigger asChild>
+                                <TableRow className="hover:bg-muted cursor-pointer">
+                                    <TableCell>
+                                        {new Date(
+                                            txn.transactionDate,
+                                        ).toLocaleDateString("en-US", {
+                                            month: "long",
+                                            day: "numeric",
+                                            year: "numeric",
+                                        })}
+                                    </TableCell>
+                                    <TableCell className="font-medium">
+                                        {txn.category.name}
+                                    </TableCell>
+                                    <TableCell
+                                        className={`text-right ${
+                                            Number(txn.amount) > 0
+                                                ? "text-green-600"
+                                                : "text-red-600"
+                                        }`}
+                                    >
+                                        ₱ {Number(txn.amount).toFixed(2)}
+                                    </TableCell>
+                                </TableRow>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>
+                                        Transaction Details
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                        <p>
+                                            Category:{" "}
+                                            <strong>{txn.category.name}</strong>
+                                        </p>
+                                        <p>
+                                            Date:{" "}
+                                            <strong>
+                                                {new Date(
+                                                    txn.transactionDate,
+                                                ).toLocaleDateString("en-US", {
+                                                    month: "long",
+                                                    day: "numeric",
+                                                    year: "numeric",
+                                                })}
+                                            </strong>
+                                        </p>
+                                        <p>
+                                            Description:{" "}
+                                            <strong>{txn.description}</strong>
+                                        </p>
+                                    </DialogDescription>
+                                </DialogHeader>
+                            </DialogContent>
+                        </Dialog>
+                    ))
                 ) : (
                     <TableRow>
                         <TableCell colSpan={3} className="text-center">
