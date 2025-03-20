@@ -15,9 +15,9 @@ export default function UserWallets() {
 
     return !isLoading ? (
         wallets.map((wallet: Wallet) => (
-            <DropdownMenuItem key={wallet.id}>
-                <Link href={`/wallet/${wallet.id}`}>{wallet.name}</Link>
-            </DropdownMenuItem>
+            <Link key={wallet.id} href={`/dashboard/${wallet.id}`}>
+                <DropdownMenuItem>{wallet.name}</DropdownMenuItem>
+            </Link>
         ))
     ) : (
         <Skeleton className="h-8 w-full" />

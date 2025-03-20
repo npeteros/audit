@@ -10,14 +10,14 @@ export async function GET(req: NextRequest) {
 
         searchParams.forEach((value, key) => {
             if (key === "id") {
-                filters[key] = Number(value);
+                filters.id = Number(value);
             }
             if (key === "userId") {
                 filters.userId = value;
             }
         });
 
-        const wallets = await walletService.getWallets({ filters });
+        const wallets = filters.id && !filters.userId ? await walletService.getWallet({ id: filters.id }) : await walletService.getWallets({ filters });
         return NextResponse.json({ wallets }, { status: 200 });
     } catch (error) {
         console.error('Error fetching wallets:', error);

@@ -18,6 +18,11 @@ export const getUserCategories = async ({ userId }: { userId: string }) => {
     return data;
 }
 
+export const getWallet = async ({ id }: { id: number }) => {
+    const { data } = await axios.get("/api/wallets?id=" + id);
+    return data;
+}
+
 export const createWallet = async (payload: AddWalletPayload) => {
     const { data } = await axios.post("/api/wallets", payload);
     return data;

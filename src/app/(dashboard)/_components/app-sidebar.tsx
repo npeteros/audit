@@ -33,22 +33,22 @@ export default function AppSidebar() {
     const items = [
         {
             title: "Dashboard",
-            url: "dashboard",
+            url: "/dashboard",
             icon: Home,
         },
         {
             title: "Transactions",
-            url: "transactions",
+            url: "/transactions",
             icon: Banknote,
         },
         {
             title: "Categories",
-            url: "categories",
+            url: "/categories",
             icon: ChartBarStacked,
         },
         {
             title: "Reports",
-            url: "reports",
+            url: "/reports",
             icon: FileText,
         },
         {

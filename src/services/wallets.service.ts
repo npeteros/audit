@@ -6,6 +6,27 @@ export type WalletFilters = Partial<Pick<Wallet, 'id' | 'userId'>>;
 
 class WalletService {
 
+    async getWallet({ id }: { id: number }) {
+        try {
+            const wallet = await prisma.wallet.findFirst({
+                where: {
+                    id
+                },
+                include: {
+                    transactions: {
+                        include: {
+                            category: true
+                        }
+                    }
+                }
+            });
+            return wallet
+        } catch (error) {
+            console.error('Error fetching wallet:', error);
+            throw new Error('Could not fetch wallet');
+        }
+    }
+
     /**
      * Fetches wallets from the database.
      *
@@ -21,6 +42,13 @@ class WalletService {
 
                     ...(filters.userId && { userId: filters.userId }),
                 },
+                include: {
+                    transactions: {
+                        include: {
+                            category: true
+                        }
+                    }
+                }
             });
             return wallets;
         } catch (error) {

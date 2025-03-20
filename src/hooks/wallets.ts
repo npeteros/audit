@@ -1,13 +1,18 @@
-import { createWallet, deleteWallet, editWallet, getUserWallets } from "@/lib/api/api";
+import { createWallet, deleteWallet, editWallet, getUserWallets, getWallet } from "@/lib/api/api";
 import { queryClient } from "@/lib/queryClient";
-import { Wallet } from "@prisma/client";
+import { WalletIncluded } from "@/types/wallets.types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-export const useUserWallets = (userId: string) => useQuery<{ wallets: Wallet[] }, unknown>({
+export const useWallet = (id: number) => useQuery<{ wallets: WalletIncluded }, unknown>({
+    queryKey: ["wallet", id],
+    queryFn: () => getWallet({ id }),
+    enabled: !!id,
+})
+
+export const useUserWallets = (userId: string) => useQuery<{ wallets: WalletIncluded[] }, unknown>({
     queryKey: ["wallets", userId],
     queryFn: () => getUserWallets({ userId }),
     enabled: !!userId,
-    staleTime: 3000
 })
 
 export const useCreateWallet = () => {

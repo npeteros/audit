@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { Transaction } from "@prisma/client";
-import { Decimal } from "@prisma/client/runtime/library";
 
 export const AddTransactionSchema = z.object({
     userId: z.string({
