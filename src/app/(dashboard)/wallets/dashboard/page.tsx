@@ -104,16 +104,14 @@ export default function DashboardPage() {
 
     const totalIncome = filteredTransactions
         ? filteredTransactions
-              .filter((t) => Number(t.amount) > 0)
+              .filter((t) => t.category.type === "INCOME")
               .reduce((sum, t) => sum + Number(t.amount), 0) || 0
         : 0;
 
     const totalExpense = filteredTransactions
-        ? Math.abs(
-              filteredTransactions
-                  ?.filter((t) => Number(t.amount) < 0)
-                  .reduce((sum, t) => sum + Number(t.amount), 0) || 0,
-          )
+        ? filteredTransactions
+              .filter((t) => t.category.type === "EXPENSE")
+              .reduce((sum, t) => sum + Number(t.amount), 0) || 0
         : 0;
 
     const balance = totalIncome - totalExpense;
