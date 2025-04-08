@@ -44,6 +44,7 @@ export const DeleteWalletSchema = z.object({
 });
 
 export type WalletIncluded = Wallet & {
+    balance: number;
     transactions: TransactionIncluded[]
 }
 

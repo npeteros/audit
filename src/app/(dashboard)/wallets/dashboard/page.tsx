@@ -1,11 +1,11 @@
 "use client";
 
+import { useUserTransactions } from "@/hooks/transactions";
 import { Button } from "@/components/ui/button";
 import { Banknote, MinusCircle, Plus, PlusCircle } from "lucide-react";
 import { useSession } from "@/hooks/useSession";
 import { TransactionIncluded } from "@/types/transactions.types";
 import RecentTransactionsTable from "../../_components/recent-transactions-table";
-import { DatePickerWithRange } from "@/components/ui/date-picker";
 import {
     Card,
     CardContent,
@@ -14,12 +14,10 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Overview } from "../../_components/overview";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { addDays, isAfter, isBefore, isEqual } from "date-fns";
 import { DateRange } from "react-day-picker";
-import { useWallet } from "@/hooks/wallets";
-import { useRouter } from "next/navigation";
-import { Skeleton } from "@/components/ui/skeleton";
+import Header from "../../_components/header";
 
 interface MonthlySummary {
     income: number;
@@ -67,15 +65,9 @@ function calculateChange(current: number, previous: number) {
     return ((current - previous) / previous) * 100;
 }
 
-interface PageProps {
-    params: Promise<{ walletId: string }>;
-}
-export default function DashboardPage({ params }: PageProps) {
-    const { walletId } = use(params) as { walletId: string };
+export default function DashboardPage() {
     const { user } = useSession();
-    const { data, isLoading } = useWallet(parseInt(walletId));
-
-    const router = useRouter();
+    const { data, isLoading } = useUserTransactions(user ? user.id : "");
 
     const [filteredTransactions, setFilteredTransactions] = useState<
         TransactionIncluded[] | undefined
@@ -86,10 +78,15 @@ export default function DashboardPage({ params }: PageProps) {
     });
 
     useEffect(() => {
-        if (!data?.wallets) return;
+        if (!data?.transactions) return;
 
-        const filtered = data.wallets.transactions.filter(
-            (transaction: TransactionIncluded) => {
+        const filtered = data.transactions
+            .sort(
+                (a: TransactionIncluded, b: TransactionIncluded) =>
+                    new Date(b.transactionDate).getTime() -
+                    new Date(a.transactionDate).getTime(),
+            )
+            .filter((transaction: TransactionIncluded) => {
                 const transactionDate = new Date(transaction.transactionDate);
 
                 if (!dateRange?.from || !dateRange?.to) return true;
@@ -100,15 +97,10 @@ export default function DashboardPage({ params }: PageProps) {
                     (isBefore(transactionDate, dateRange.to) ||
                         isEqual(transactionDate, dateRange.to))
                 );
-            },
-        );
+            });
 
         setFilteredTransactions(filtered);
     }, [data, dateRange]);
-
-    if (user && data && data.wallets.userId !== user.id) {
-        return router.push("/dashboard");
-    }
 
     const totalIncome = filteredTransactions
         ? filteredTransactions
@@ -152,26 +144,11 @@ export default function DashboardPage({ params }: PageProps) {
 
     return (
         <div className="space-y-6 p-4">
-            <div className="flex items-center justify-between">
-                {!isLoading ? (
-                    data ? (
-                        <h1 className="text-2xl font-bold">
-                            {data.wallets.name}
-                        </h1>
-                    ) : null
-                ) : (
-                    <Skeleton className="h-12 w-64" />
-                )}
-                <div className="flex items-center gap-2">
-                    <DatePickerWithRange
-                        value={dateRange}
-                        onChange={setDateRange}
-                    />
-                    <Button variant="default" className="cursor-pointer">
-                        Download
-                    </Button>
-                </div>
-            </div>
+            <Header
+                title="Dashboard"
+                date={dateRange}
+                onChange={setDateRange}
+            />
 
             <div className="grid gap-4 lg:grid-cols-3">
                 <Card>

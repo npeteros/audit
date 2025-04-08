@@ -6,9 +6,23 @@ import { TransactionIncluded } from "@/types/transactions.types";
 import { addDays, isAfter, isBefore, isEqual } from "date-fns";
 import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
-import Header from "../_components/header";
+import Header from "../../_components/header";
 import TransactionsTable from "./_components/(transactions-table)/transactions-table";
 import { columns } from "./_components/(transactions-table)/columns";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+
+function ActionButton() {
+    return (
+        <Button
+            variant="default"
+            className="w-full cursor-pointer text-sm md:w-fit"
+        >
+            <Plus className="mr-2" />
+            New Transaction
+        </Button>
+    );
+}
 
 export default function Transactions() {
     const { user } = useSession();
@@ -52,6 +66,7 @@ export default function Transactions() {
             <Header
                 title="Transactions"
                 date={dateRange}
+                actionButton={<ActionButton />}
                 onChange={setDateRange}
             />
 

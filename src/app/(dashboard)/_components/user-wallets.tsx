@@ -15,7 +15,7 @@ export default function UserWallets() {
 
     return !isLoading ? (
         wallets.map((wallet: Wallet) => (
-            <Link key={wallet.id} href={`/dashboard/${wallet.id}`}>
+            <Link key={wallet.id} href={`/wallet/${wallet.id}/dashboard`}>
                 <DropdownMenuItem>{wallet.name}</DropdownMenuItem>
             </Link>
         ))

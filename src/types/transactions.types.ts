@@ -70,9 +70,10 @@ export type TransactionIncluded = Transaction & {
         icon: string;
         type: string;
     };
-    wallet: {
+    wallet?: {
         name: string;
     }
+    amount: number;
 }
 
 export type AddTransactionPayload = z.infer<typeof AddTransactionSchema>;

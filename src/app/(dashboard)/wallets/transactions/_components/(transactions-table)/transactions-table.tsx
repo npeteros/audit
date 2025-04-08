@@ -2,6 +2,7 @@
 
 import {
     ColumnDef,
+    PaginationState,
     SortingState,
     flexRender,
     getCoreRowModel,
@@ -19,6 +20,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -32,6 +34,10 @@ export default function TransactionsTable<TData, TValue>({
     isLoading,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = useState<SortingState>([]);
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: 0,
+        pageSize: 10,
+    });
 
     const table = useReactTable({
         data,
@@ -40,8 +46,10 @@ export default function TransactionsTable<TData, TValue>({
         getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
+        onPaginationChange: setPagination,
         state: {
             sorting,
+            pagination,
         },
     });
 
@@ -105,6 +113,24 @@ export default function TransactionsTable<TData, TValue>({
                     )}
                 </TableBody>
             </Table>
+            <div className="flex items-center justify-end space-x-2 p-4">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                >
+                    Previous
+                </Button>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                >
+                    Next
+                </Button>
+            </div>
         </div>
     );
 }

@@ -18,42 +18,42 @@ import {
 import {
     Banknote,
     ChartBarStacked,
+    ChartColumnIncreasing,
     ChevronUp,
     Cog,
     FileText,
-    Home,
     User2,
 } from "lucide-react";
 import Link from "next/link";
-import SignOutButton from "./signout-btn";
-import Username from "./username-span";
+import SignOutButton from "../../_components/signout-btn";
+import Username from "../../_components/username-span";
 import AppSidebarHeader from "./app-sidebar-header";
 
 export default function AppSidebar() {
     const items = [
         {
             title: "Dashboard",
-            url: "/dashboard",
-            icon: Home,
+            url: "/wallets/dashboard",
+            icon: ChartColumnIncreasing,
         },
         {
             title: "Transactions",
-            url: "/transactions",
+            url: "/wallets/transactions",
             icon: Banknote,
         },
         {
             title: "Categories",
-            url: "/categories",
+            url: "/wallets/categories",
             icon: ChartBarStacked,
         },
         {
             title: "Reports",
-            url: "/reports",
+            url: "/wallets/reports",
             icon: FileText,
         },
         {
             title: "Settings",
-            url: "/settings",
+            url: "/wallets/settings",
             icon: Cog,
         },
     ];

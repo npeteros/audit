@@ -12,8 +12,8 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { ChevronDown, Plus, Wallet } from "lucide-react";
-import UserWallets from "./user-wallets";
-import AddWalletForm from "./add-wallet-form";
+import UserWallets from "../../_components/user-wallets";
+import AddWalletForm from "../../_components/add-wallet-form";
 
 export default function AppSidebarHeader() {
     return (
@@ -32,9 +32,9 @@ export default function AppSidebarHeader() {
                             <DropdownMenuContent className="min-w-[var(--radix-popper-anchor-width)]">
                                 <UserWallets />
                                 <DialogTrigger asChild>
-                                    <DropdownMenuItem className="bg-primary focus:bg-primary/90 my-2 text-white focus:text-white">
-                                        <Plus className="mr-2 text-white" />
-                                        <span className="font-semibold">
+                                    <DropdownMenuItem className="bg-primary focus:bg-primary/90 my-2">
+                                        <Plus className="mr-2 invert" />
+                                        <span className="font-semibold invert">
                                             Create Wallet
                                         </span>
                                     </DropdownMenuItem>

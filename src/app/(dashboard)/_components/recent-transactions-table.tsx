@@ -24,7 +24,7 @@ export default function RecentTransactionsTable({
     isLoading,
 }: {
     transactions: TransactionIncluded[] | undefined;
-    isLoading: boolean;
+    isLoading?: boolean;
 }) {
     return (
         <Table>
@@ -62,11 +62,14 @@ export default function RecentTransactionsTable({
                                     </TableCell>
                                     <TableCell
                                         className={`text-right ${
-                                            Number(txn.amount) > 0
+                                            txn.category.type === "INCOME"
                                                 ? "text-green-600"
                                                 : "text-red-600"
                                         }`}
                                     >
+                                        {txn.category.type === "EXPENSE"
+                                            ? "-"
+                                            : "+"}
                                         ₱ {Number(txn.amount).toFixed(2)}
                                     </TableCell>
                                 </TableRow>
