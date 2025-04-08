@@ -2,7 +2,6 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AppSidebar from "./_components/app-sidebar";
 import "@/app/globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
-import { PropsWithChildren } from "react";
 import { Decimal } from "@prisma/client/runtime/library";
 import { notFound } from "next/navigation";
 import { WalletProvider } from "../WalletContext";
@@ -14,7 +13,10 @@ const walletService = new WalletService();
 export default async function Layout({
     children,
     params,
-}: PropsWithChildren<{ params: { walletId: string } }>) {
+}: {
+    children: React.ReactNode;
+    params: Promise<{ walletId: string }>;
+}) {
     const supabase = await createClient();
 
     const {

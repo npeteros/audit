@@ -70,7 +70,14 @@ export default function RecentTransactionsTable({
                                         {txn.category.type === "EXPENSE"
                                             ? "-"
                                             : "+"}
-                                        ₱ {Number(txn.amount).toFixed(2)}
+                                        ₱{" "}
+                                        {Number(txn.amount).toLocaleString(
+                                            "en-US",
+                                            {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2,
+                                            },
+                                        )}
                                     </TableCell>
                                 </TableRow>
                             </DialogTrigger>

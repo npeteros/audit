@@ -1,8 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Banknote, MinusCircle, Plus, PlusCircle } from "lucide-react";
-import { TransactionIncluded } from "@/types/transactions.types";
+import { Banknote, MinusCircle, PlusCircle } from "lucide-react";
+import {
+    AddTransactionPayload,
+    TransactionIncluded,
+} from "@/types/transactions.types";
 import RecentTransactionsTable from "@/app/(dashboard)/_components/recent-transactions-table";
 import { DatePickerWithRange } from "@/components/ui/date-picker";
 import {
@@ -18,6 +21,9 @@ import { addDays, isAfter, isBefore, isEqual } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { notFound } from "next/navigation";
 import { useCurrentWallet } from "../../WalletContext";
+import TransactionDialog from "@/app/(dashboard)/_components/transaction-dialog";
+import { useCreateTransaction } from "@/hooks/transactions";
+import { toast } from "sonner";
 
 interface MonthlySummary {
     income: number;
@@ -67,6 +73,13 @@ function calculateChange(current: number, previous: number) {
 
 export default function DashboardPage() {
     const wallet = useCurrentWallet();
+    const {
+        mutate: createTransaction,
+        isPending,
+        isSuccess,
+        isError,
+        error: createTransactionError,
+    } = useCreateTransaction();
 
     const [filteredTransactions, setFilteredTransactions] = useState<
         TransactionIncluded[] | undefined
@@ -99,16 +112,14 @@ export default function DashboardPage() {
 
     const totalIncome = filteredTransactions
         ? filteredTransactions
-              .filter((t) => Number(t.amount) > 0)
+              .filter((t) => t.category.type === "INCOME")
               .reduce((sum, t) => sum + Number(t.amount), 0) || 0
         : 0;
 
     const totalExpense = filteredTransactions
-        ? Math.abs(
-              filteredTransactions
-                  ?.filter((t) => Number(t.amount) < 0)
-                  .reduce((sum, t) => sum + Number(t.amount), 0) || 0,
-          )
+        ? filteredTransactions
+              .filter((t) => t.category.type === "EXPENSE")
+              .reduce((sum, t) => sum + Number(t.amount), 0) || 0
         : 0;
 
     const balance = totalIncome - totalExpense;
@@ -137,18 +148,36 @@ export default function DashboardPage() {
     const expenseChange = calculateChange(current.expense, previous.expense);
     const balanceChange = calculateChange(current.balance, previous.balance);
 
+    const handleAddTransaction = async (data: AddTransactionPayload) => {
+        try {
+            createTransaction(data);
+        } catch (error) {
+            console.error("Form submission error: ", error);
+            console.error(
+                "Transaction submission error: ",
+                createTransactionError,
+            );
+            toast.error(
+                "Failed to create a new transaction. Please try again.",
+            );
+        }
+    };
+
     if (!wallet) return notFound();
 
     return (
         <div className="space-y-6 p-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between">
                 <h1 className="text-2xl font-bold">{wallet.name}</h1>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     <DatePickerWithRange
                         value={dateRange}
                         onChange={setDateRange}
                     />
-                    <Button variant="default" className="cursor-pointer">
+                    <Button
+                        variant="default"
+                        className="w-full cursor-pointer sm:w-fit"
+                    >
                         Download
                     </Button>
                 </div>
@@ -164,7 +193,11 @@ export default function DashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            ₱ ${balance.toFixed(2)}
+                            ₱
+                            {balance.toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}
                         </div>
                         <p className="text-muted-foreground text-xs">
                             {balanceChange.toFixed(2)}% from last month
@@ -180,7 +213,11 @@ export default function DashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            ₱ ${totalIncome.toFixed(2)}
+                            ₱
+                            {totalIncome.toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}
                         </div>
                         <p className="text-muted-foreground text-xs">
                             {incomeChange.toFixed(2)}% from last month
@@ -196,7 +233,11 @@ export default function DashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            ₱ ${totalExpense.toFixed(2)}
+                            ₱
+                            {totalExpense.toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}
                         </div>
                         <p className="text-muted-foreground text-xs">
                             {expenseChange.toFixed(2)}% from last month
@@ -205,8 +246,8 @@ export default function DashboardPage() {
                 </Card>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
+            <div className="grid gap-4 lg:grid-cols-7">
+                <Card className="lg:col-span-4">
                     <CardHeader>
                         <CardTitle>Overview</CardTitle>
                     </CardHeader>
@@ -214,8 +255,8 @@ export default function DashboardPage() {
                         <Overview transactions={filteredTransactions ?? []} />
                     </CardContent>
                 </Card>
-                <Card className="col-span-3">
-                    <CardHeader className="flex items-center justify-between">
+                <Card className="lg:col-span-3">
+                    <CardHeader className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
                         <div>
                             <CardTitle>Recent Transactions</CardTitle>
                             <CardDescription>
@@ -223,10 +264,14 @@ export default function DashboardPage() {
                                 transactions in the selected period.
                             </CardDescription>
                         </div>
-                        <Button variant="default" className="cursor-pointer">
-                            <Plus />
-                            Add Entry
-                        </Button>
+                        <TransactionDialog
+                            mode="add"
+                            onSubmit={handleAddTransaction}
+                            walletId={wallet.id}
+                            isPending={isPending}
+                            isSuccess={isSuccess}
+                            isError={isError}
+                        />
                     </CardHeader>
                     <CardContent>
                         <RecentTransactionsTable

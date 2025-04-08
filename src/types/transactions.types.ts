@@ -12,7 +12,7 @@ export const AddTransactionSchema = z.object({
     }),
     categoryId: z.number({
         required_error: "categoryId is required.",
-        invalid_type_error: "categoryId must be a string.",
+        invalid_type_error: "categoryId must be a number.",
     }),
     transactionDate: z.string({
         required_error: "transactionDate is required.",
