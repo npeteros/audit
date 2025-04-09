@@ -21,8 +21,8 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className="dark">
-            <body className={`${robotoCondensed.variable} bg-[#F8F8F8]`}>
+        <html lang="en">
+            <body className={`${robotoCondensed.variable}`}>
                 {children}
                 <Toaster />
             </body>

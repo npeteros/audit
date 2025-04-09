@@ -1,4 +1,6 @@
+import { Wallet } from "@prisma/client";
 import { z } from "zod";
+import { TransactionIncluded } from "./transactions.types";
 
 export const AddWalletSchema = z.object({
     userId: z.string({
@@ -40,6 +42,11 @@ export const DeleteWalletSchema = z.object({
         invalid_type_error: "id must be a number.",
     }),
 });
+
+export type WalletIncluded = Wallet & {
+    balance: number;
+    transactions: TransactionIncluded[]
+}
 
 export type AddWalletPayload = z.infer<typeof AddWalletSchema>;
 export type EditWalletPayload = z.infer<typeof EditWalletSchema>;

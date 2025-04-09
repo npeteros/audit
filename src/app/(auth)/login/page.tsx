@@ -25,8 +25,10 @@ function LoginForm({
     ...props
 }: React.ComponentPropsWithoutRef<"div">) {
     const [email, setEmail] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        setLoading(true);
         e.preventDefault();
 
         const formData = new FormData();
@@ -36,6 +38,7 @@ function LoginForm({
 
         if (result.success) toast.success(result.message);
         else toast.error(result.message);
+        setLoading(false);
     }
 
     return (
@@ -51,29 +54,25 @@ function LoginForm({
                                 <Image
                                     src="/audit-black.png"
                                     alt="AuditPH"
+                                    className="dark:invert"
                                     //   className="max-h-40 max-w-40"
                                     width={2000}
                                     height={1247}
                                 />
                             </div>
-                            <span className="sr-only text-neutral-800">
-                                AuditPH
-                            </span>
+                            <span className="sr-only">AuditPH</span>
                         </Link>
-                        <h1 className="text-xl font-bold text-neutral-800">
+                        <h1 className="text-xl font-bold">
                             Welcome to AuditPH
                         </h1>
                     </div>
                     <div className="flex flex-col gap-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="email" className="text-neutral-800">
-                                Email
-                            </Label>
+                            <Label htmlFor="email">Email</Label>
                             <Input
                                 id="email"
                                 type="email"
                                 placeholder="m@example.com"
-                                className="text-neutral-800"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
@@ -81,7 +80,8 @@ function LoginForm({
                         </div>
                         <Button
                             type="submit"
-                            className="w-full bg-neutral-800 text-white hover:bg-neutral-900"
+                            className={`bg-primary hover:bg-primary/90 w-full`}
+                            disabled={loading}
                         >
                             Login
                         </Button>

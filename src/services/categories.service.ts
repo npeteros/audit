@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { AddCategoryPayload, DeleteCategoryPayload, EditCategoryPayload } from "@/types/categories.types";
 import { Category } from "@prisma/client";
 
-export type CategoryFilters = Partial<Pick<Category, 'id' | 'userId' | 'walletId' | 'type'>>;
+export type CategoryFilters = Partial<Pick<Category, 'userId'>>;
 
 class CategoryService {
 
@@ -17,10 +17,15 @@ class CategoryService {
         try {
             const categories = await prisma.category.findMany({
                 where: {
-                    ...(filters.id && { id: filters.id }),
-                    ...(filters.userId && { userId: filters.userId }),
-                    ...(filters.walletId && { walletId: filters.walletId }),
-                    ...(filters.type && { type: filters.type }),
+                    ...(filters.userId
+                        ? {
+                            OR: [
+                                { userId: null },
+                                { userId: filters.userId }
+                            ]
+                        }
+                        : { userId: null }
+                    ),
                 },
             });
             return categories;

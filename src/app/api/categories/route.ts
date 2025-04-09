@@ -1,6 +1,5 @@
 import CategoryService, { CategoryFilters } from "@/services/categories.service";
 import { AddCategorySchema, EditCategorySchema, DeleteCategorySchema } from "@/types/categories.types";
-import { TransactionType } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const categoryService = new CategoryService;
@@ -10,15 +9,8 @@ export async function GET(req: NextRequest) {
         const filters: CategoryFilters = {};
 
         searchParams.forEach((value, key) => {
-            if (key === "id" || key === "walletId") {
-                filters[key] = Number(value);
-            }
             if (key === "userId") {
                 filters[key] = value;
-            }
-
-            if (key === "type") {
-                filters[key] = value as TransactionType;
             }
         });
 

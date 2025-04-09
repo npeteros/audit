@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Transaction } from "@prisma/client";
 
 export const AddTransactionSchema = z.object({
     userId: z.string({
@@ -11,7 +12,7 @@ export const AddTransactionSchema = z.object({
     }),
     categoryId: z.number({
         required_error: "categoryId is required.",
-        invalid_type_error: "categoryId must be a string.",
+        invalid_type_error: "categoryId must be a number.",
     }),
     transactionDate: z.string({
         required_error: "transactionDate is required.",
@@ -37,11 +38,11 @@ export const EditTransactionSchema = z.object({
     }),
     walletId: z.number({
         required_error: "walletId is required.",
-        invalid_type_error: "walletId must be a string.",
+        invalid_type_error: "walletId must be a number.",
     }),
     categoryId: z.number({
         required_error: "categoryId is required.",
-        invalid_type_error: "categoryId must be a string.",
+        invalid_type_error: "categoryId must be a number.",
     }),
     transactionDate: z.string({
         required_error: "transactionDate is required.",
@@ -62,6 +63,18 @@ export const DeleteTransactionSchema = z.object({
         invalid_type_error: "id must be a number.",
     }),
 });
+
+export type TransactionIncluded = Transaction & {
+    category: {
+        name: string;
+        icon: string;
+        type: string;
+    };
+    wallet?: {
+        name: string;
+    }
+    amount: number;
+}
 
 export type AddTransactionPayload = z.infer<typeof AddTransactionSchema>;
 export type EditTransactionPayload = z.infer<typeof EditTransactionSchema>;
