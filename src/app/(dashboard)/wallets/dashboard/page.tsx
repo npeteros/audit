@@ -1,13 +1,9 @@
 "use client";
 
-import {
-    useUserTransactions,
-} from "@/hooks/transactions";
+import { useUserTransactions } from "@/hooks/transactions";
 import { Banknote, MinusCircle, PlusCircle } from "lucide-react";
 import { useSession } from "@/hooks/useSession";
-import {
-    TransactionIncluded,
-} from "@/types/transactions.types";
+import { TransactionIncluded } from "@/types/transactions.types";
 import RecentTransactionsTable from "../../_components/recent-transactions-table";
 import {
     Card,
@@ -209,8 +205,8 @@ export default function DashboardPage() {
                 </Card>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
+            <div className="grid gap-4 lg:grid-cols-7">
+                <Card className="lg:col-span-4">
                     <CardHeader>
                         <CardTitle>Overview</CardTitle>
                     </CardHeader>
@@ -218,8 +214,8 @@ export default function DashboardPage() {
                         <Overview transactions={filteredTransactions ?? []} />
                     </CardContent>
                 </Card>
-                <Card className="col-span-3">
-                    <CardHeader className="flex items-center justify-between">
+                <Card className="lg:col-span-3">
+                    <CardHeader className="flex flex-wrap items-center justify-between">
                         <div>
                             <CardTitle>Recent Transactions</CardTitle>
                             <CardDescription>
