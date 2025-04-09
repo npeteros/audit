@@ -2,9 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Banknote, MinusCircle, PlusCircle } from "lucide-react";
-import {
-    TransactionIncluded,
-} from "@/types/transactions.types";
+import { TransactionIncluded } from "@/types/transactions.types";
 import RecentTransactionsTable from "@/app/(dashboard)/_components/recent-transactions-table";
 import { DatePickerWithRange } from "@/components/ui/date-picker";
 import {
@@ -21,6 +19,7 @@ import { DateRange } from "react-day-picker";
 import { notFound } from "next/navigation";
 import { useCurrentWallet } from "../../WalletContext";
 import AddTransactionDialog from "@/app/(dashboard)/_components/add-transaction-dialog";
+import { toast } from "sonner";
 
 interface MonthlySummary {
     income: number;
@@ -152,6 +151,9 @@ export default function DashboardPage() {
                     <Button
                         variant="default"
                         className="w-full cursor-pointer sm:w-fit"
+                        onClick={() =>
+                            toast.info("This feature is not yet available.")
+                        }
                     >
                         Download
                     </Button>
@@ -231,7 +233,7 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
                 <Card className="lg:col-span-3">
-                    <CardHeader className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
+                    <CardHeader className="flex flex-wrap items-center justify-between">
                         <div>
                             <CardTitle>Recent Transactions</CardTitle>
                             <CardDescription>
@@ -239,9 +241,7 @@ export default function DashboardPage() {
                                 transactions in the selected period.
                             </CardDescription>
                         </div>
-                        <AddTransactionDialog
-                            walletId={wallet.id}
-                        />
+                        <AddTransactionDialog walletId={wallet.id} />
                     </CardHeader>
                     <CardContent>
                         <RecentTransactionsTable
