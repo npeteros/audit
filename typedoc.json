@@ -1,0 +1,10 @@
+{
+    "entryPoints": ["./src"],
+    "entryPointStrategy": "expand",
+    "out": "docs",
+    "exclude": ["**/*.test.ts", "**/node_modules/**", "**/.next/**"],
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "includeVersion": true,
+    "tsconfig": "./tsconfig.json"
+}
