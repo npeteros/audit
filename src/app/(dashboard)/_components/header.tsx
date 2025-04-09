@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { DatePickerWithRange } from "@/components/ui/date-picker";
 import { DateRange } from "react-day-picker";
+import { toast } from "sonner";
 
 export default function Header({
     title,
@@ -22,7 +23,7 @@ export default function Header({
                     <h1 className="text-2xl font-bold">{title}</h1>
                     <div className="flex gap-2">
                         <DatePickerWithRange value={date} onChange={onChange} />
-                        <Button variant="default" className="cursor-pointer">
+                        <Button variant="default" className="cursor-pointer" onClick={() => toast.info("This feature is not yet available.")}>
                             Download
                         </Button>
                     </div>
@@ -33,7 +34,7 @@ export default function Header({
                 <h1 className="text-2xl font-bold">{title}</h1>
                 <div className="flex items-center gap-2">
                     <DatePickerWithRange value={date} onChange={onChange} />
-                    <Button variant="default" className="cursor-pointer">
+                    <Button variant="default" className="cursor-pointer" onClick={() => toast.info("This feature is not yet available.")}>
                         Download
                     </Button>
                     {actionButton}
