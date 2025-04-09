@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Banknote, MinusCircle, PlusCircle } from "lucide-react";
 import {
-    AddTransactionPayload,
     TransactionIncluded,
 } from "@/types/transactions.types";
 import RecentTransactionsTable from "@/app/(dashboard)/_components/recent-transactions-table";
@@ -21,9 +20,7 @@ import { addDays, isAfter, isBefore, isEqual } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { notFound } from "next/navigation";
 import { useCurrentWallet } from "../../WalletContext";
-import TransactionDialog from "@/app/(dashboard)/_components/transaction-dialog";
-import { useCreateTransaction } from "@/hooks/transactions";
-import { toast } from "sonner";
+import AddTransactionDialog from "@/app/(dashboard)/_components/add-transaction-dialog";
 
 interface MonthlySummary {
     income: number;
@@ -73,13 +70,6 @@ function calculateChange(current: number, previous: number) {
 
 export default function DashboardPage() {
     const wallet = useCurrentWallet();
-    const {
-        mutate: createTransaction,
-        isPending,
-        isSuccess,
-        isError,
-        error: createTransactionError,
-    } = useCreateTransaction();
 
     const [filteredTransactions, setFilteredTransactions] = useState<
         TransactionIncluded[] | undefined
@@ -147,21 +137,6 @@ export default function DashboardPage() {
     const incomeChange = calculateChange(current.income, previous.income);
     const expenseChange = calculateChange(current.expense, previous.expense);
     const balanceChange = calculateChange(current.balance, previous.balance);
-
-    const handleAddTransaction = async (data: AddTransactionPayload) => {
-        try {
-            createTransaction(data);
-        } catch (error) {
-            console.error("Form submission error: ", error);
-            console.error(
-                "Transaction submission error: ",
-                createTransactionError,
-            );
-            toast.error(
-                "Failed to create a new transaction. Please try again.",
-            );
-        }
-    };
 
     if (!wallet) return notFound();
 
@@ -264,13 +239,8 @@ export default function DashboardPage() {
                                 transactions in the selected period.
                             </CardDescription>
                         </div>
-                        <TransactionDialog
-                            mode="add"
-                            onSubmit={handleAddTransaction}
+                        <AddTransactionDialog
                             walletId={wallet.id}
-                            isPending={isPending}
-                            isSuccess={isSuccess}
-                            isError={isError}
                         />
                     </CardHeader>
                     <CardContent>

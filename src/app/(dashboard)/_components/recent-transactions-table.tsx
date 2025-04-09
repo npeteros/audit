@@ -9,15 +9,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { TransactionIncluded } from "@/types/transactions.types";
+import EditTransactionDialog from "./edit-transaction-dialog";
 
 export default function RecentTransactionsTable({
     transactions,
@@ -28,7 +22,7 @@ export default function RecentTransactionsTable({
 }) {
     return (
         <Table>
-            <TableCaption>Click on a transaction to view details</TableCaption>
+            <TableCaption>Click on a transaction to edit details</TableCaption>
             <TableHeader>
                 <TableRow>
                     <TableHead className="w-[100px]">Date</TableHead>
@@ -51,7 +45,7 @@ export default function RecentTransactionsTable({
                                     <TableCell>
                                         {new Date(
                                             txn.transactionDate,
-                                        ).toLocaleDateString("en-US", {
+                                        ).toLocaleString("en-US", {
                                             month: "long",
                                             day: "numeric",
                                             year: "numeric",
@@ -81,35 +75,16 @@ export default function RecentTransactionsTable({
                                     </TableCell>
                                 </TableRow>
                             </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>
-                                        Transaction Details
-                                    </DialogTitle>
-                                    <DialogDescription>
-                                        <p>
-                                            Category:{" "}
-                                            <strong>{txn.category.name}</strong>
-                                        </p>
-                                        <p>
-                                            Date:{" "}
-                                            <strong>
-                                                {new Date(
-                                                    txn.transactionDate,
-                                                ).toLocaleDateString("en-US", {
-                                                    month: "long",
-                                                    day: "numeric",
-                                                    year: "numeric",
-                                                })}
-                                            </strong>
-                                        </p>
-                                        <p>
-                                            Description:{" "}
-                                            <strong>{txn.description}</strong>
-                                        </p>
-                                    </DialogDescription>
-                                </DialogHeader>
-                            </DialogContent>
+                            <EditTransactionDialog
+                                defaultValues={{
+                                    ...txn,
+                                    transactionDate: new Date(
+                                        txn.transactionDate,
+                                    ).toLocaleDateString(),
+                                    description: txn.description || "",
+                                    amount: Number(txn.amount)
+                                }}
+                            />
                         </Dialog>
                     ))
                 ) : (

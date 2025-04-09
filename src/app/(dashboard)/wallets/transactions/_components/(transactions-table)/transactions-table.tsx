@@ -10,10 +10,10 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-
 import {
     Table,
     TableBody,
+    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -21,14 +21,17 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import EditTransactionDialog from "@/app/(dashboard)/_components/edit-transaction-dialog";
+import { TransactionIncluded } from "@/types/transactions.types";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
-    data: TData[];
+    data: TData[] ;
     isLoading: boolean;
 }
 
-export default function TransactionsTable<TData, TValue>({
+export default function TransactionsTable<TData extends TransactionIncluded, TValue>({
     columns,
     data,
     isLoading,
@@ -56,6 +59,9 @@ export default function TransactionsTable<TData, TValue>({
     return (
         <div className="rounded-md border">
             <Table>
+                <TableCaption>
+                    Click on a transaction to edit details
+                </TableCaption>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
@@ -86,21 +92,44 @@ export default function TransactionsTable<TData, TValue>({
                             </TableCell>
                         </TableRow>
                     ) : table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
-                            >
-                                {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id}>
-                                        {flexRender(
-                                            cell.column.columnDef.cell,
-                                            cell.getContext(),
-                                        )}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        ))
+                        table.getRowModel().rows.map((row) => {
+                            const txn: TransactionIncluded = row.original;
+                            return (
+                                <Dialog key={row.id}>
+                                    <DialogTrigger asChild>
+                                        <TableRow
+                                            key={row.id}
+                                            data-state={
+                                                row.getIsSelected() &&
+                                                "selected"
+                                            }
+                                        >
+                                            {row
+                                                .getVisibleCells()
+                                                .map((cell) => (
+                                                    <TableCell key={cell.id}>
+                                                        {flexRender(
+                                                            cell.column
+                                                                .columnDef.cell,
+                                                            cell.getContext(),
+                                                        )}
+                                                    </TableCell>
+                                                ))}
+                                        </TableRow>
+                                    </DialogTrigger>
+                                    <EditTransactionDialog
+                                        defaultValues={{
+                                            ...txn,
+                                            transactionDate: new Date(
+                                                txn.transactionDate,
+                                            ).toLocaleDateString(),
+                                            description: txn.description || "",
+                                            amount: Number(txn.amount),
+                                        }}
+                                    />
+                                </Dialog>
+                            );
+                        })
                     ) : (
                         <TableRow>
                             <TableCell

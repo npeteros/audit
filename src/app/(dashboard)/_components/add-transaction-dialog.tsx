@@ -4,8 +4,6 @@ import { useSession } from "@/hooks/useSession";
 import {
     AddTransactionPayload,
     AddTransactionSchema,
-    EditTransactionPayload,
-    EditTransactionSchema,
 } from "@/types/transactions.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -13,7 +11,6 @@ import { useForm } from "react-hook-form";
 import {
     Dialog,
     DialogContent,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -28,7 +25,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { CalendarIcon, Pencil, Plus } from "lucide-react";
+import { CalendarIcon, Plus } from "lucide-react";
 import { useUserCategories } from "@/hooks/categories";
 import { Label } from "@/components/ui/label";
 import {
@@ -48,31 +45,19 @@ import {
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { useUserWallets } from "@/hooks/wallets";
+import { useCreateTransaction } from "@/hooks/transactions";
+import { toast } from "sonner";
 
 interface TransactionDialogProps {
-    mode: "add" | "edit";
-    defaultValues?: EditTransactionPayload;
-    onSubmit: (data: EditTransactionPayload) => Promise<void>;
     walletId?: number;
-    isPending: boolean;
-    isSuccess: boolean;
-    isError: boolean;
 }
 
-export default function TransactionDialog({
-    mode,
-    defaultValues,
-    onSubmit,
+export default function AddTransactionDialog({
     walletId = 0,
-    isPending,
-    isSuccess,
-    isError,
 }: TransactionDialogProps) {
     const [open, setOpen] = useState(false);
-    const [openDelete, setOpenDelete] = useState(false);
     const [txnType, setTxnType] = useState<"expense" | "income">("expense");
     const [categoriesByType, setCategoriesByType] = useState<Category[]>([]);
-    const [statusMsg, setStatusMsg] = useState<string>("");
     const { user } = useSession();
     const { data: { categories } = { categories: [] } } = useUserCategories(
         user ? user.id : "",
@@ -81,21 +66,24 @@ export default function TransactionDialog({
         user ? user.id : "",
     );
 
-    const form = useForm<AddTransactionPayload | EditTransactionPayload>({
-        resolver: zodResolver(
-            mode === "add" ? AddTransactionSchema : EditTransactionSchema,
-        ),
-        defaultValues:
-            mode === "add"
-                ? {
-                      userId: "",
-                      walletId,
-                      categoryId: 0,
-                      transactionDate: "",
-                      description: "",
-                      amount: 0,
-                  }
-                : defaultValues,
+    const {
+        mutate: createTransaction,
+        isPending,
+        isSuccess,
+        isError,
+        error: createTransactionError,
+    } = useCreateTransaction();
+
+    const form = useForm<AddTransactionPayload>({
+        resolver: zodResolver(AddTransactionSchema),
+        defaultValues: {
+            userId: "",
+            walletId,
+            categoryId: 0,
+            transactionDate: "",
+            description: "",
+            amount: 0,
+        },
     });
 
     useEffect(() => {
@@ -116,63 +104,50 @@ export default function TransactionDialog({
 
     useEffect(() => {
         if (isSuccess) {
-            setStatusMsg("Transaction added successfully");
+            toast.success("Transaction added successfully");
         }
         if (isError) {
-            setStatusMsg("Error adding transaction. Please try again.");
+            toast.error("Error adding transaction. Please try again.");
         }
     }, [isSuccess, isError]);
 
-    async function handleSubmit(
-        data: AddTransactionPayload | EditTransactionPayload,
-    ) {
+    async function handleSubmit(data: AddTransactionPayload) {
         try {
             data.userId = user?.id ?? "";
             data.categoryId = Number(data.categoryId);
             data.amount = Number(data.amount);
             data.transactionDate = new Date(data.transactionDate).toISOString();
 
-            if (mode === "add") {
-                const transformedData: EditTransactionPayload = {
-                    id: 0,
-                    ...(data as AddTransactionPayload),
-                };
-                await onSubmit(transformedData);
-            } else {
-                await onSubmit(data as EditTransactionPayload);
-            }
+            createTransaction(data);
+
             form.reset();
         } catch (error) {
-            console.error(error);
+            console.error("Form submission error: ", error);
+            console.error(
+                "Transaction submission error: ",
+                createTransactionError,
+            );
+            toast.error(
+                "Failed to create a new transaction. Please try again.",
+            );
         }
     }
 
     return (
         <Dialog
             open={open}
-            onOpenChange={(open) => {
-                setOpen(open);
-                setStatusMsg("");
-            }}
+            onOpenChange={(open) => 
+                setOpen(open)
+            }
         >
             <DialogTrigger asChild>
                 <Button className="flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 sm:w-fit">
-                    {mode === "add" ? (
-                        <>
-                            Add Transaction <Plus className="h-4 w-4" />
-                        </>
-                    ) : (
-                        <Pencil className="h-4 w-4" />
-                    )}
+                    Add Transaction <Plus className="h-4 w-4" />
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>
-                        {mode === "add"
-                            ? "Add Transaction"
-                            : "Edit Transaction"}
-                    </DialogTitle>
+                    <DialogTitle>Add Transaction</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form
@@ -391,80 +366,21 @@ export default function TransactionDialog({
                                 </FormItem>
                             )}
                         />
-                        {isSuccess && (
-                            <p className="text-sm text-green-600">
-                                {statusMsg}
-                            </p>
-                        )}
-                        {isError && (
-                            <p className="text-sm text-red-600">{statusMsg}</p>
-                        )}
                         <div className="flex justify-end gap-2">
-                            {mode === "add" ? (
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className="flex cursor-pointer items-center gap-2 rounded-md bg-white px-3 py-2"
-                                    onClick={() => setOpen(false)}
-                                >
-                                    Cancel
-                                </Button>
-                            ) : (
-                                <>
-                                    <Dialog
-                                        open={openDelete}
-                                        onOpenChange={setOpenDelete}
-                                    >
-                                        <DialogTrigger asChild>
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                className="flex cursor-pointer items-center gap-2 rounded-md bg-white px-3 py-2"
-                                            >
-                                                Delete
-                                            </Button>
-                                        </DialogTrigger>
-                                        <DialogContent>
-                                            <DialogHeader>
-                                                <DialogTitle>
-                                                    Are you absolutely sure?
-                                                </DialogTitle>
-                                            </DialogHeader>
-                                            This action cannot be undone. This
-                                            will permanently delete your account
-                                            and remove your data from our
-                                            servers.
-                                            <DialogFooter className="flex justify-end gap-2">
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    className="flex cursor-pointer items-center gap-2 rounded-md bg-white px-3 py-2"
-                                                    onClick={() =>
-                                                        setOpenDelete(false)
-                                                    }
-                                                >
-                                                    Cancel
-                                                </Button>
-                                                <Button
-                                                    type="submit"
-                                                    className="flex cursor-pointer items-center gap-2 rounded-md px-3 py-2"
-                                                    onClick={() =>
-                                                        setOpen(false)
-                                                    }
-                                                >
-                                                    Continue
-                                                </Button>
-                                            </DialogFooter>
-                                        </DialogContent>
-                                    </Dialog>
-                                </>
-                            )}
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="flex cursor-pointer items-center gap-2 rounded-md bg-white px-3 py-2"
+                                onClick={() => setOpen(false)}
+                            >
+                                Cancel
+                            </Button>
                             <Button
                                 type="submit"
                                 className="flex cursor-pointer items-center gap-2 rounded-md px-3 py-2"
                                 disabled={!form.formState.isValid || isPending}
                             >
-                                {mode === "add" ? "Submit" : "Save"}
+                                Submit
                             </Button>
                         </div>
                     </form>

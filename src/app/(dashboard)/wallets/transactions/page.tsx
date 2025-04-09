@@ -1,12 +1,10 @@
 "use client";
 
 import {
-    useCreateTransaction,
     useUserTransactions,
 } from "@/hooks/transactions";
 import { useSession } from "@/hooks/useSession";
 import {
-    AddTransactionPayload,
     TransactionIncluded,
 } from "@/types/transactions.types";
 import { addDays, isAfter, isBefore, isEqual } from "date-fns";
@@ -15,8 +13,7 @@ import { DateRange } from "react-day-picker";
 import Header from "../../_components/header";
 import TransactionsTable from "./_components/(transactions-table)/transactions-table";
 import { columns } from "./_components/(transactions-table)/columns";
-import TransactionDialog from "../../_components/transaction-dialog";
-import { toast } from "sonner";
+import AddTransactionDialog from "../../_components/add-transaction-dialog";
 
 export default function Transactions() {
     const { user } = useSession();
@@ -29,13 +26,6 @@ export default function Transactions() {
         from: addDays(new Date(), -30),
         to: new Date(),
     });
-    const {
-        mutate: createTransaction,
-        isPending,
-        isSuccess,
-        isError,
-        error: createTransactionError,
-    } = useCreateTransaction();
 
     useEffect(() => {
         if (!data?.transactions) return;
@@ -62,34 +52,13 @@ export default function Transactions() {
         setFilteredTransactions(filtered);
     }, [data, dateRange]);
 
-    const handleAddTransaction = async (data: AddTransactionPayload) => {
-        try {
-            createTransaction(data);
-        } catch (error) {
-            console.error("Form submission error: ", error);
-            console.error(
-                "Transaction submission error: ",
-                createTransactionError,
-            );
-            toast.error(
-                "Failed to create a new transaction. Please try again.",
-            );
-        }
-    };
-
     return (
         <div className="space-y-6 p-4">
             <Header
                 title="Transactions"
                 date={dateRange}
                 actionButton={
-                    <TransactionDialog
-                        mode="add"
-                        onSubmit={handleAddTransaction}
-                        isPending={isPending}
-                        isSuccess={isSuccess}
-                        isError={isError}
-                    />
+                    <AddTransactionDialog />
                 }
                 onChange={setDateRange}
             />

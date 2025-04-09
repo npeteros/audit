@@ -19,13 +19,13 @@ import {
 } from "@/components/ui/sidebar";
 import {
     Banknote,
-    ChartBarStacked,
     ChartColumnIncreasing,
     ChevronUp,
-    Cog,
-    FileText,
     Home,
     User2,
+    // ChartBarStacked,
+    // Cog,
+    // FileText,
 } from "lucide-react";
 import Link from "next/link";
 import SignOutButton from "@/app/(dashboard)/_components/signout-btn";
@@ -52,21 +52,21 @@ export default function AppSidebar() {
             url: `/wallet/${wallet.id}/transactions`,
             icon: Banknote,
         },
-        {
-            title: "Categories",
-            url: `/wallet/${wallet.id}/categories`,
-            icon: ChartBarStacked,
-        },
-        {
-            title: "Reports",
-            url: `/wallet/${wallet.id}/reports`,
-            icon: FileText,
-        },
-        {
-            title: "Settings",
-            url: `/wallet/${wallet.id}/settings`,
-            icon: Cog,
-        },
+        // {
+        //     title: "Categories",
+        //     url: `/wallet/${wallet.id}/categories`,
+        //     icon: ChartBarStacked,
+        // },
+        // {
+        //     title: "Reports",
+        //     url: `/wallet/${wallet.id}/reports`,
+        //     icon: FileText,
+        // },
+        // {
+        //     title: "Settings",
+        //     url: `/wallet/${wallet.id}/settings`,
+        //     icon: Cog,
+        // },
     ];
 
     return (

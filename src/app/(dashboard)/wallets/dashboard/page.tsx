@@ -1,13 +1,11 @@
 "use client";
 
 import {
-    useCreateTransaction,
     useUserTransactions,
 } from "@/hooks/transactions";
 import { Banknote, MinusCircle, PlusCircle } from "lucide-react";
 import { useSession } from "@/hooks/useSession";
 import {
-    AddTransactionPayload,
     TransactionIncluded,
 } from "@/types/transactions.types";
 import RecentTransactionsTable from "../../_components/recent-transactions-table";
@@ -23,8 +21,7 @@ import { useEffect, useState } from "react";
 import { addDays, isAfter, isBefore, isEqual } from "date-fns";
 import { DateRange } from "react-day-picker";
 import Header from "../../_components/header";
-import TransactionDialog from "../../_components/transaction-dialog";
-import { toast } from "sonner";
+import AddTransactionDialog from "../../_components/add-transaction-dialog";
 
 interface MonthlySummary {
     income: number;
@@ -75,13 +72,6 @@ function calculateChange(current: number, previous: number) {
 export default function DashboardPage() {
     const { user } = useSession();
     const { data, isLoading } = useUserTransactions(user ? user.id : "");
-    const {
-        mutate: createTransaction,
-        isPending,
-        isSuccess,
-        isError,
-        error: createTransactionError,
-    } = useCreateTransaction();
 
     const [filteredTransactions, setFilteredTransactions] = useState<
         TransactionIncluded[] | undefined
@@ -153,21 +143,6 @@ export default function DashboardPage() {
     const incomeChange = calculateChange(current.income, previous.income);
     const expenseChange = calculateChange(current.expense, previous.expense);
     const balanceChange = calculateChange(current.balance, previous.balance);
-
-    const handleAddTransaction = async (data: AddTransactionPayload) => {
-        try {
-            createTransaction(data);
-        } catch (error) {
-            console.error("Form submission error: ", error);
-            console.error(
-                "Transaction submission error: ",
-                createTransactionError,
-            );
-            toast.error(
-                "Failed to create a new transaction. Please try again.",
-            );
-        }
-    };
 
     return (
         <div className="space-y-6 p-4">
@@ -252,13 +227,7 @@ export default function DashboardPage() {
                                 transactions in the selected period.
                             </CardDescription>
                         </div>
-                        <TransactionDialog
-                            mode="add"
-                            onSubmit={handleAddTransaction}
-                            isPending={isPending}
-                            isSuccess={isSuccess}
-                            isError={isError}
-                        />
+                        <AddTransactionDialog />
                     </CardHeader>
                     <CardContent>
                         <RecentTransactionsTable

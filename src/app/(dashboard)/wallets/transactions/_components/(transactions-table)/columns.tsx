@@ -75,7 +75,24 @@ export const columns: ColumnDef<TransactionIncluded>[] = [
     {
         accessorKey: "amount",
         accessorFn: (row: TransactionIncluded) => Number(row.amount).toFixed(2),
-        cell: (info) => `₱ ${info.getValue()}`,
+        cell: ({ row }) => {
+            const { category, amount } = row.original;
+            return (
+                <span
+                    className={`text-right ${
+                        category.type === "INCOME"
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }`}
+                >
+                    {category.type === "EXPENSE" ? "-" : "+"}₱{" "}
+                    {Number(amount).toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })}
+                </span>
+            );
+        },
         header: ({ column }) => {
             return (
                 <Button
