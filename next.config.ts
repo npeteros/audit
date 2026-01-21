@@ -1,16 +1,14 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-    /* config options here */
-    async redirects() {
-        return [
+    images: {
+        remotePatterns: [
             {
-                source: '/',
-                destination: '/wallets/dashboard',
-                permanent: true
-            }
-        ]
-    }
+                protocol: 'https',
+                hostname: 'placehold.co',
+            },
+        ],
+    },
 };
 
 export default nextConfig;
