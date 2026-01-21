@@ -5,13 +5,12 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-    provider = "prisma-client-js"
+    provider = "prisma-client"
+    output = "../src/lib/prisma/generated"
 }
 
 datasource db {
-    provider  = "postgresql"
-    url       = env("DATABASE_URL")
-    directUrl = env("DIRECT_URL")
+    provider = "postgresql"
 }
 
 enum TransactionType {
@@ -19,63 +18,73 @@ enum TransactionType {
     INCOME
 }
 
+enum CategoryScope {
+    GLOBAL
+    USER
+}
+
 model User {
-    id           String        @id @default(uuid()) // Same UUID as Supabase Auth
+    id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
     email        String        @unique
     createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
     wallets      Wallet[]
     transactions Transaction[]
     categories   Category[]
+
+    @@map("users")
 }
 
 model Wallet {
-    id        Int      @id @default(autoincrement())
-    userId    String
+    id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    userId    String   @db.Uuid
     name      String
-    balance   Decimal
     createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-    user         User          @relation(fields: [userId], references: [id])
+    user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
     transactions Transaction[]
-    categories   Category[]
 
-    @@index([userId])
+    @@index([userId, name])
+    @@map("wallets")
 }
 
 model Transaction {
-    id              Int      @id @default(autoincrement())
-    userId          String
-    walletId        Int
-    categoryId      Int
+    id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    userId          String   @db.Uuid
+    walletId        String   @db.Uuid
+    categoryId      String   @db.Uuid
     transactionDate DateTime
     description     String?
-    amount          Decimal
+    amount          Decimal  @db.Decimal(19, 4)
     createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
 
-    user     User     @relation(fields: [userId], references: [id])
-    wallet   Wallet   @relation(fields: [walletId], references: [id])
-    category Category @relation(fields: [categoryId], references: [id])
+    user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    wallet   Wallet   @relation(fields: [walletId], references: [id], onDelete: Restrict)
+    category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
 
-    @@index([userId])
-    @@index([walletId])
-    @@index([categoryId])
-    @@index([transactionDate])
+    @@index([userId, transactionDate])
+    @@index([walletId, transactionDate])
+    @@index([userId, walletId])
+    @@index([categoryId, transactionDate])
+    @@map("transactions")
 }
 
 model Category {
-    id        Int             @id @default(autoincrement())
-    userId    String?
-    walletId  Int?
+    id        String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    scope     CategoryScope   @default(GLOBAL)
+    ownerId   String?         @db.Uuid
     name      String
     icon      String
     type      TransactionType
     createdAt DateTime        @default(now())
+    updatedAt DateTime        @updatedAt
 
-    user         User?         @relation(fields: [userId], references: [id])
-    wallet       Wallet?       @relation(fields: [walletId], references: [id])
+    user         User?         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
     transactions Transaction[]
 
-    @@index([userId])
-    @@index([walletId])
-    @@index([type])
+    @@index([scope, type])
+    @@index([ownerId, type])
+    @@map("categories")
 }
