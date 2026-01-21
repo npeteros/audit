@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
     Sidebar,
@@ -26,7 +27,7 @@ import { formatCurrency } from '@/lib/utils';
 import { LayoutDashboard, ArrowLeftRight, FolderOpen, Wallet, BarChart3, PiggyBank, Settings, LogOut, ChevronRight, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+function DashboardLayoutComponent({ children }: { children: React.ReactNode }) {
     const { userId, email, avatarUrl, isLoading: userLoading } = useUser();
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -267,5 +268,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
             </SidebarInset>
         </SidebarProvider>
+    );
+}
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <Suspense fallback={<div className="h-screen w-full animate-pulse bg-muted" />}>
+            <DashboardLayoutComponent>{children}</DashboardLayoutComponent>
+        </Suspense>
     );
 }

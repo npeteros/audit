@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DatePickerWithRange } from '@/components/ui/date-picker';
@@ -10,7 +11,7 @@ import { useUser } from '@/components/providers/user-provider';
 import { getLast30Days } from '@/lib/utils';
 import type { DateRange } from 'react-day-picker';
 
-export function TransactionFilters() {
+function TransactionFiltersComponent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { userId } = useUser();
@@ -118,5 +119,13 @@ export function TransactionFilters() {
                 </SelectContent>
             </Select>
         </div>
+    );
+}
+
+export function TransactionFilters() {
+    return (
+        <Suspense fallback={<div className="h-10 w-full animate-pulse bg-muted rounded" />}>
+            <TransactionFiltersComponent />
+        </Suspense>
     );
 }

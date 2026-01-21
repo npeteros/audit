@@ -1,10 +1,11 @@
 'use client';
 
 import * as React from 'react';
+import { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-export function CategoryFilters() {
+function CategoryFiltersComponent() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -37,5 +38,13 @@ export function CategoryFilters() {
                 </SelectContent>
             </Select>
         </div>
+    );
+}
+
+export function CategoryFilters() {
+    return (
+        <Suspense fallback={<div className="h-10 w-full animate-pulse bg-muted rounded" />}>
+            <CategoryFiltersComponent />
+        </Suspense>
     );
 }

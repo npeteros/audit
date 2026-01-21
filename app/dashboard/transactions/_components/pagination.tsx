@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -12,7 +13,7 @@ interface PaginationProps {
     disabled?: boolean;
 }
 
-export function Pagination({ meta, disabled = false }: PaginationProps) {
+function PaginationComponent({ meta, disabled = false }: PaginationProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -141,5 +142,13 @@ export function Pagination({ meta, disabled = false }: PaginationProps) {
                 </div>
             </div>
         </div>
+    );
+}
+
+export function Pagination({ meta, disabled = false }: PaginationProps) {
+    return (
+        <Suspense fallback={<div className="h-10 w-full animate-pulse bg-muted rounded" />}>
+            <PaginationComponent meta={meta} disabled={disabled} />
+        </Suspense>
     );
 }

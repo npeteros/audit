@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -16,7 +17,7 @@ import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import type { WalletWithCountResponse } from '@/types/wallets.types';
 
-export default function WalletsPage() {
+function WalletsPageComponent() {
     const { userId } = useUser();
     const searchParams = useSearchParams();
     const deleteMutation = useDeleteWallet();
@@ -162,5 +163,20 @@ export default function WalletsPage() {
             {/* Wallet Form */}
             <WalletForm open={formOpen} onOpenChange={setFormOpen} wallet={editingWallet} />
         </div>
+    );
+}
+
+export default function WalletsPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="p-8 space-y-4">
+                    <div className="h-8 w-48 animate-pulse bg-muted rounded" />
+                    <div className="h-64 w-full animate-pulse bg-muted rounded" />
+                </div>
+            }
+        >
+            <WalletsPageComponent />
+        </Suspense>
     );
 }

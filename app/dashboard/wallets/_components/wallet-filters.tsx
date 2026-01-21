@@ -1,11 +1,12 @@
 'use client';
 
 import * as React from 'react';
+import { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 
-export function WalletFilters() {
+function WalletFiltersComponent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [searchValue, setSearchValue] = React.useState(searchParams.get('search') || '');
@@ -38,5 +39,13 @@ export function WalletFilters() {
                 <Input placeholder="Search wallets..." value={searchValue} onChange={(e) => setSearchValue(e.target.value)} className="pl-9" />
             </div>
         </div>
+    );
+}
+
+export function WalletFilters() {
+    return (
+        <Suspense fallback={<div className="h-10 w-full animate-pulse bg-muted rounded" />}>
+            <WalletFiltersComponent />
+        </Suspense>
     );
 }

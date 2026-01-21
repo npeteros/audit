@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { type DateRange } from 'react-day-picker';
 import { useUser } from '@/components/providers/user-provider';
@@ -16,7 +17,7 @@ import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { CategoryIcon } from '@/components/shared/category-icon';
 
-export default function DashboardPage() {
+function DashboardPageComponent() {
     const { userId, isLoading: userLoading } = useUser();
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -258,5 +259,24 @@ export default function DashboardPage() {
                 </CardContent>
             </Card>
         </div>
+    );
+}
+
+export default function DashboardPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="space-y-6">
+                    <div className="h-8 w-48 animate-pulse bg-muted rounded" />
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                        {[1, 2, 3, 4].map((i) => (
+                            <div key={i} className="h-32 animate-pulse bg-muted rounded" />
+                        ))}
+                    </div>
+                </div>
+            }
+        >
+            <DashboardPageComponent />
+        </Suspense>
     );
 }

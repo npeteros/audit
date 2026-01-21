@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -17,7 +18,7 @@ import { toast } from 'sonner';
 import type { CategoryWithTransactionCount } from '@/types/categories.types';
 import type { TransactionType } from '@/lib/prisma/generated/client';
 
-export default function CategoriesPage() {
+function CategoriesPageComponent() {
     const { userId } = useUser();
     const searchParams = useSearchParams();
     const deleteMutation = useDeleteCategory();
@@ -161,5 +162,20 @@ export default function CategoriesPage() {
             {/* Category Form */}
             <CategoryForm open={formOpen} onOpenChange={setFormOpen} category={editingCategory} />
         </div>
+    );
+}
+
+export default function CategoriesPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="p-8 space-y-4">
+                    <div className="h-8 w-48 animate-pulse bg-muted rounded" />
+                    <div className="h-64 w-full animate-pulse bg-muted rounded" />
+                </div>
+            }
+        >
+            <CategoriesPageComponent />
+        </Suspense>
     );
 }

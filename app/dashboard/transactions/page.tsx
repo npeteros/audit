@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -19,7 +20,7 @@ import { getLast30Days } from '@/lib/utils';
 import type { TransactionWithDetailsResponse } from '@/types/transactions.types';
 import type { TransactionType } from '@/lib/prisma/generated/client';
 
-export default function TransactionsPage() {
+function TransactionsPageComponent() {
     const { userId } = useUser();
     const searchParams = useSearchParams();
     const deleteMutation = useDeleteTransaction();
@@ -180,5 +181,20 @@ export default function TransactionsPage() {
             {/* Transaction Form */}
             <TransactionForm open={formOpen} onOpenChange={setFormOpen} transaction={editingTransaction} defaultDate={startDate} />
         </div>
+    );
+}
+
+export default function TransactionsPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="p-8 space-y-4">
+                    <div className="h-8 w-48 animate-pulse bg-muted rounded" />
+                    <div className="h-64 w-full animate-pulse bg-muted rounded" />
+                </div>
+            }
+        >
+            <TransactionsPageComponent />
+        </Suspense>
     );
 }
