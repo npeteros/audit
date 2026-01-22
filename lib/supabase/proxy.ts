@@ -43,6 +43,7 @@ export async function updateSession(request: NextRequest) {
 
     if (user && request.nextUrl.pathname.startsWith('/login')) {
         // has user and is on login page, redirect to home page
+        console.log('User session found, redirecting to home page');    
         const url = request.nextUrl.clone();
         url.pathname = '/';
         return NextResponse.redirect(url);

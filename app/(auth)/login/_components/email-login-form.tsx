@@ -7,8 +7,7 @@ import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { useForm } from '@tanstack/react-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
-import { useLoginWithEmail, useUser } from '@/lib/api/users.api';
-import { useRouter } from 'next/navigation';
+import { useLoginWithEmail } from '@/lib/api/users.api';
 
 const emailSchema = z.object({
     email: z.email('Please enter a valid email address').min(1, 'Email is required'),
@@ -48,14 +47,6 @@ export default function EmailLoginForm({ className, ...props }: React.ComponentP
             }
         },
     });
-
-    const { data: userData } = useUser();
-    const { id: userId } = userData?.user || {};
-    const router = useRouter();
-    if (userId) {
-        router.push('/');
-        return;
-    }
 
     return (
         <>
