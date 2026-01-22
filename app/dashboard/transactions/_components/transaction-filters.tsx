@@ -37,7 +37,7 @@ function TransactionFiltersComponent() {
     });
 
     // Fetch categories and wallets
-    const { data: categories } = useCategories({ userId: userId || undefined });
+    const { data: categories } = useCategories({ ownerId: userId || undefined });
     const { data: wallets } = useWallets(userId || undefined);
 
     const updateUrlParam = (key: string, value: string) => {
