@@ -1,7 +1,7 @@
 'use client';
 
-import { createClient } from '@/lib/supabase/client';
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { useGetSession } from '@/lib/api/users.api';
+import { createContext, useContext, ReactNode } from 'react';
 
 interface UserContextType {
     userId: string | null;
@@ -14,46 +14,14 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({ children }: { children: ReactNode }) {
-    const [userId, setUserId] = useState<string | null>(null);
-    const [email, setEmail] = useState<string | null>(null);
-    const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const { data, isLoading, refetch } = useGetSession();
 
-    const loadUser = async () => {
-        setIsLoading(true);
-        try {
-            const supabase = createClient();
-            const { data, error } = await supabase.auth.getClaims();
-
-            if (error) {
-                console.error('Error fetching user claims:', error);
-                setUserId(null);
-                setEmail(null);
-                setAvatarUrl(null);
-                return;
-            }
-
-            if (data) {
-                setUserId(data.claims.sub);
-                setEmail((data.claims.email as string) || null);
-                setAvatarUrl((data.claims.user_metadata?.avatar_url as string) || null);
-            }
-        } catch (error) {
-            console.error('Error loading user:', error);
-            setUserId(null);
-            setEmail(null);
-            setAvatarUrl(null);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        loadUser();
-    }, []);
+    const userId = data?.user?.id || null;
+    const email = data?.user?.email || null;
+    const avatarUrl = data?.user?.avatarUrl || null;
 
     const refreshUser = async () => {
-        await loadUser();
+        await refetch();
     };
 
     return <UserContext.Provider value={{ userId, email, avatarUrl, isLoading, refreshUser }}>{children}</UserContext.Provider>;

@@ -1,11 +1,39 @@
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 const STALE_TIME = 5 * 60 * 1000; // 5 minutes
 
-export const useLoginWithEmail = () =>
-    useMutation<{ success: boolean; message: string }, Error, { email: string }>({
+interface SessionUser {
+    id: string;
+    email: string | null;
+    avatarUrl: string | null;
+}
+
+interface SessionResponse {
+    user: SessionUser | null;
+}
+
+export const useGetSession = () =>
+    useQuery<SessionResponse, Error>({
+        queryKey: ['session'],
+        queryFn: async () => {
+            const response = await fetch('/api/auth/session');
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch session');
+            }
+
+            return response.json();
+        },
+        staleTime: STALE_TIME,
+        retry: 1,
+    });
+
+export const useLoginWithEmail = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation<{ success: boolean; message: string }, Error, { email: string }>({
         mutationFn: async ({ email }) => {
             const response = await fetch('/api/login', {
                 method: 'POST',
@@ -21,10 +49,16 @@ export const useLoginWithEmail = () =>
 
             return response.json();
         },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['session'] });
+        },
     });
+};
 
-export const useLoginWithGoogle = () =>
-    useMutation<{ success: boolean; url: string }, Error>({
+export const useLoginWithGoogle = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation<{ success: boolean; url: string }, Error>({
         mutationFn: async () => {
             const response = await fetch('/api/login/google', {
                 method: 'POST',
@@ -36,10 +70,16 @@ export const useLoginWithGoogle = () =>
 
             return response.json();
         },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['session'] });
+        },
     });
+};
 
-export const useLogoutUser = () =>
-    useMutation<{ success: boolean; message: string }, Error>({
+export const useLogoutUser = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation<{ success: boolean; message: string }, Error>({
         mutationFn: async () => {
             const response = await fetch('/api/logout', {
                 method: 'POST',
@@ -51,4 +91,8 @@ export const useLogoutUser = () =>
 
             return response.json();
         },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['session'] });
+        },
     });
+};
