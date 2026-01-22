@@ -51,7 +51,7 @@ export function IncomeExpenseChart({ summary, isLoading }: IncomeExpenseChartPro
     return (
         <Card className="p-6">
             <h3 className="text-lg font-semibold mb-4">Income vs Expense</h3>
-            <ChartContainer config={chartConfig} className="h-[300px]">
+            <ChartContainer config={chartConfig} className="h-96 md:h-75 w-full">
                 <BarChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                     <XAxis dataKey="category" tickLine={false} axisLine={false} className="text-xs" />

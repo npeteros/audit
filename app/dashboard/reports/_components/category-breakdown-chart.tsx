@@ -87,7 +87,7 @@ export function CategoryBreakdownChart({ userId, walletId, startDate, endDate, t
             <Card className="p-6">
                 <div className="animate-pulse space-y-4">
                     <div className="h-6 w-48 bg-muted rounded" />
-                    <div className="h-75 bg-muted rounded" />
+                    <div className="h-96 md:h-75 bg-muted rounded" />
                 </div>
             </Card>
         );
@@ -97,29 +97,35 @@ export function CategoryBreakdownChart({ userId, walletId, startDate, endDate, t
         return (
             <Card className="p-6">
                 <h3 className="text-lg font-semibold mb-4">{type === 'INCOME' ? 'Income' : 'Expense'} by Category</h3>
-                <div className="h-75 flex items-center justify-center text-muted-foreground">No {type.toLowerCase()} data available</div>
+                <div className="h-96 md:h-75 flex items-center justify-center text-muted-foreground">No {type.toLowerCase()} data available</div>
             </Card>
         );
     }
 
     return (
-        <Card className="p-6">
+        <Card className="p-6 overflow-hidden">
             <h3 className="text-lg font-semibold mb-4">{type === 'INCOME' ? 'Income' : 'Expense'} by Category</h3>
-            <ChartContainer config={chartConfig} className="h-75">
+            <ChartContainer config={chartConfig} className="h-96 md:h-75 w-full">
                 <PieChart>
-                    <ChartTooltip content={<ChartTooltipContent formatter={(value, name) => (
-                        <div className='flex flex-col'>
-                            <span className='font-medium'>{name}</span>
-                            <span>{formatCurrency(Number(value))}</span>
-                        </div>
-                    )} />} />
+                    <ChartTooltip
+                        content={
+                            <ChartTooltipContent
+                                formatter={(value, name) => (
+                                    <div className="flex flex-col">
+                                        <span className="font-medium">{name}</span>
+                                        <span>{formatCurrency(Number(value))}</span>
+                                    </div>
+                                )}
+                            />
+                        }
+                    />
                     <Pie
                         data={chartData}
                         dataKey="value"
                         nameKey="name"
                         cx="50%"
                         cy="50%"
-                        outerRadius={100}
+                        outerRadius="80%"
                         label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     >
                         {chartData.map((entry, index) => (
