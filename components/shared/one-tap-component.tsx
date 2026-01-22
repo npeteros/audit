@@ -37,8 +37,6 @@ const OneTapComponent = () => {
             return;
         }
 
-        console.log("Client ID: ", process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
-
         // global google
         google.accounts.id.initialize({
             client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
@@ -56,7 +54,7 @@ const OneTapComponent = () => {
                     console.log('Successfully logged in with Google One Tap');
 
                     // redirect to protected page
-                    router.push('/');
+                    router.push('/dashboard')
                 } catch (error) {
                     console.error('Error logging in with Google One Tap', error);
                 }

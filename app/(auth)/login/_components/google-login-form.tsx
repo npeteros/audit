@@ -15,7 +15,6 @@ export default function GoogleLoginForm({ className, ...props }: React.Component
                 onSuccess: (data) => {
                     if (data.success) {
                         toast.success('Redirecting to Google for authentication...');
-                        console.log('Redirect URL:', data.url);
                         router.push(data.url);
                     }
                 },
