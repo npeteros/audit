@@ -101,7 +101,7 @@ export function TrendChart({ userId, walletId, startDate, endDate }: TrendChartP
             <Card className="p-6">
                 <div className="animate-pulse space-y-4">
                     <div className="h-6 w-48 bg-muted rounded" />
-                    <div className="h-100 bg-muted rounded" />
+                    <div className="h-96 md:h-100 bg-muted rounded" />
                 </div>
             </Card>
         );
@@ -117,9 +117,9 @@ export function TrendChart({ userId, walletId, startDate, endDate }: TrendChartP
     }
 
     return (
-        <Card className="p-6">
+        <Card className="p-6 ">
             <h3 className="text-lg font-semibold mb-4">Transaction Trends Over Time</h3>
-            <ChartContainer config={chartConfig} className="h-100">
+            <ChartContainer config={chartConfig} className="h-96 md:h-100 w-full">
                 <LineChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                     <XAxis dataKey="date" tickLine={false} axisLine={false} className="text-xs" />

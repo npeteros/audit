@@ -8,7 +8,6 @@ export interface GetCategoriesFilters {
     scope?: CategoryScope;
     ownerId?: string;
     type?: TransactionType;
-    userId?: string;
 }
 
 const QUERY_KEYS = {
@@ -28,7 +27,6 @@ export const useCategories = (filters?: GetCategoriesFilters) =>
             if (filters?.scope) params.append('scope', filters.scope);
             if (filters?.ownerId) params.append('ownerId', filters.ownerId);
             if (filters?.type) params.append('type', filters.type);
-            if (filters?.userId) params.append('userId', filters.userId);
 
             const url = params.toString() ? `/api/categories?${params}` : '/api/categories';
             const response = await fetch(url);

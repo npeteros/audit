@@ -37,7 +37,7 @@ export function TransactionForm({ open, onOpenChange, transaction, defaultDate }
     const [transactionType, setTransactionType] = React.useState<TransactionType>(transaction?.category.type || 'EXPENSE');
 
     // Fetch categories and wallets
-    const { data: allCategories } = useCategories({ userId: userId || undefined });
+    const { data: allCategories } = useCategories({ ownerId: userId || undefined });
     const { data: walletsData } = useWallets(userId || undefined);
     const wallets = walletsData?.data || [];
 

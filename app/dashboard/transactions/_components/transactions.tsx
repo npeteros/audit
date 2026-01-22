@@ -180,7 +180,7 @@ function TransactionsPageComponent() {
             )}
 
             {/* Transaction Form */}
-            <TransactionForm open={formOpen} onOpenChange={setFormOpen} transaction={editingTransaction} defaultDate={startDate} />
+            <TransactionForm open={formOpen} onOpenChange={setFormOpen} transaction={editingTransaction} />
         </div>
     );
 }

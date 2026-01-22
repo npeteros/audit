@@ -9,11 +9,10 @@ export async function GET(request: NextRequest) {
         const scope = searchParams.get('scope');
         const ownerId = searchParams.get('ownerId');
         const type = searchParams.get('type');
-        const userId = searchParams.get('userId');
 
-        // If userId is provided, get categories available for that user
-        if (userId) {
-            const categories = await categoryService.getCategoriesForUser(userId, type === 'INCOME' || type === 'EXPENSE' ? type : undefined);
+        // If ownerId is provided, get categories available for that owner
+        if (ownerId) {
+            const categories = await categoryService.getCategoriesForUser(ownerId, type === 'INCOME' || type === 'EXPENSE' ? type : undefined);
             return NextResponse.json(categories);
         }
 

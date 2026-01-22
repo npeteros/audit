@@ -40,7 +40,7 @@ function CategoriesPageComponent() {
         isLoading,
         error,
     } = useCategories({
-        userId: userId || undefined,
+        ownerId: userId || undefined,
         type,
     });
 
