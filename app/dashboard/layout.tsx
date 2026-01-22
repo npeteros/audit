@@ -21,11 +21,12 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useUser } from '@/lib/api/users.api';
+import { useLogoutUser, useUser } from '@/lib/api/users.api';
 import { useWallets } from '@/lib/api/wallets.api';
 import { formatCurrency } from '@/lib/utils';
 import { LayoutDashboard, ArrowLeftRight, FolderOpen, Wallet, BarChart3, PiggyBank, Settings, LogOut, ChevronRight, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 function DashboardLayoutComponent({ children }: { children: React.ReactNode }) {
     const { data: userData, isLoading: userLoading } = useUser();
@@ -38,6 +39,20 @@ function DashboardLayoutComponent({ children }: { children: React.ReactNode }) {
     // Fetch all wallets for the sidebar (no pagination needed for dropdown)
     const { data: walletsData, isLoading: walletsLoading } = useWallets(userId!);
     const wallets = walletsData?.data || [];
+
+    const logout = useLogoutUser();
+
+    async function handleLogout() {
+        logout.mutate(undefined, {
+            onSuccess: () => {
+                toast.success('Logged out successfully');
+                router.push('/login');
+            },
+            onError: (error) => {
+                toast.error(`Logout failed: ${error.message}`);
+            }
+        })
+	}
 
     const handleWalletSelect = (selectedWalletId: string | null) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -248,10 +263,10 @@ function DashboardLayoutComponent({ children }: { children: React.ReactNode }) {
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem asChild>
-                                        <Link href="/logout" className="cursor-pointer text-red-600">
+                                        <button onClick={handleLogout} className="flex w-full cursor-pointer items-center text-red-600">
                                             <LogOut className="mr-2 h-4 w-4" />
                                             <span>Log Out</span>
-                                        </Link>
+                                        </button>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
