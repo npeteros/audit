@@ -1,0 +1,16 @@
+# Allow all bots to crawl
+User-agent: *
+Allow: /
+
+# Disallow private dashboard and auth pages
+Disallow: /dashboard/
+Disallow: /logout/
+
+# Allow login page for brand presence
+Allow: /login/
+
+# Sitemap location
+Sitemap: https://auditph.vercel.app/sitemap.xml
+
+# Crawl-delay (in seconds) - standard rate
+Crawl-delay: 1

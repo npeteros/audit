@@ -1,30 +1,14 @@
-'use client';
+import type { Metadata } from 'next';
+import LogoutPage from './_components/logout';
 
-import { Button } from '@/components/ui/button';
-import { useLogoutUser } from '@/lib/api/users.api';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+export const metadata: Metadata = {
+    title: 'Logout - AuditPH',
+    robots: {
+        index: false,
+        follow: false,
+    },
+};
 
-export default function Logout() {
-    const logout = useLogoutUser();
-    const router = useRouter();
-    
-    async function handleLogout() {
-        logout.mutate(undefined, {
-            onSuccess: () => {
-                toast.success('Logged out successfully');
-                router.push('/login');
-            },
-            onError: (error) => {
-                toast.error(`Logout failed: ${error.message}`);
-            }
-        })
-	}
-	return (
-        <form action={handleLogout} className="flex items-center justify-center h-screen">
-			<Button type="submit" variant="default" size="lg" disabled={logout.isPending}>
-				Logout
-			</Button>
-		</form>
-	);
+export default function Page() {
+    return <LogoutPage />
 }

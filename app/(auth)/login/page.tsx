@@ -1,8 +1,18 @@
+import type { Metadata } from 'next';
 import EmailLoginForm from './_components/email-login-form';
 import { Separator } from '@/components/ui/separator';
 import GoogleLoginForm from './_components/google-login-form';
 import Link from 'next/link';
 import Image from 'next/image';
+
+export const metadata: Metadata = {
+    title: 'Sign In - AuditPH',
+    description: 'Sign in to AuditPH to manage your finances and track expenses across all your wallets.',
+    robots: {
+        index: false,
+        follow: true,
+    },
+};
 
 export default function LoginPage() {
     return (
