@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/shared/empty-state';
-import { useUser } from '@/components/providers/user-provider';
+import { useUser } from '@/lib/api/users.api';
 import { useWallets, useDeleteWallet } from '@/lib/api/wallets.api';
 import { WalletFilters } from './_components/wallet-filters';
 import { WalletTable } from './_components/wallet-table';
@@ -18,7 +18,8 @@ import { toast } from 'sonner';
 import type { WalletWithCountResponse } from '@/types/wallets.types';
 
 function WalletsPageComponent() {
-    const { userId } = useUser();
+    const { data: userData } = useUser();
+    const { id: userId } = userData?.user || {};
     const searchParams = useSearchParams();
     const deleteMutation = useDeleteWallet();
 

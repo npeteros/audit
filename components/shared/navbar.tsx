@@ -9,7 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@/components/providers/user-provider';
+import { useUser } from '@/lib/api/users.api';
 import { useLogoutUser } from '@/lib/api/users.api';
 import { toast } from 'sonner';
 
@@ -27,7 +27,8 @@ const navLinks: NavLinkProps[] = [
 export default function Navbar() {
     const router = useRouter();
     const logout = useLogoutUser();
-    const { userId, avatarUrl, email, isLoading } = useUser();
+    const { data: userData, isLoading } = useUser();
+    const { id: userId, avatarUrl, email } = userData?.user || {};
 
     const signOut = () => {
         logout.mutate(undefined, {
@@ -73,7 +74,7 @@ export default function Navbar() {
                         <span className="sr-only">Toggle navigation menu</span>
                     </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className='px-6'>
+                <SheetContent side="left" className="px-6">
                     <nav className="grid gap-6 py-6">
                         <Link href="/" className="flex items-center">
                             <Image src="/audit-black.png" alt="AuditPH" className="max-h-24 max-w-24 dark:hidden" width={200} height={124} />
@@ -96,10 +97,9 @@ export default function Navbar() {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-full">
-                                    <Avatar className="size-8">
-                                        
+                                <Avatar className="size-8">
                                     <AvatarImage src={avatarUrl || '/default.png'} alt={email || 'User'} />
-                                    <AvatarFallback className="bg-primary text-primary-foreground">{getInitials(email)}</AvatarFallback>
+                                    <AvatarFallback className="bg-primary text-primary-foreground">{getInitials(email!)}</AvatarFallback>
                                 </Avatar>
                                 <span className="sr-only">Toggle user menu</span>
                             </Button>

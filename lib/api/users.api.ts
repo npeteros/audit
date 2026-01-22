@@ -14,7 +14,7 @@ interface SessionResponse {
     user: SessionUser | null;
 }
 
-export const useGetSession = () =>
+export const useUser = () =>
     useQuery<SessionResponse, Error>({
         queryKey: ['session'],
         queryFn: async () => {

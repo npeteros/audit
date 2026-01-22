@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCreateCategory, useUpdateCategory } from '@/lib/api/categories.api';
-import { useUser } from '@/components/providers/user-provider';
+import { useUser } from '@/lib/api/users.api';
 import { AddCategorySchema, EditCategorySchema } from '@/types/categories.types';
 import type { CategoryWithTransactionCount, EditCategoryInput } from '@/types/categories.types';
 import { toast } from 'sonner';
@@ -56,7 +56,8 @@ const CATEGORY_ICONS = [
 ];
 
 export function CategoryForm({ open, onOpenChange, category }: CategoryFormProps) {
-    const { userId } = useUser();
+    const { data: userData } = useUser();
+    const { id: userId } = userData?.user || {};
     const createMutation = useCreateCategory();
     const updateMutation = useUpdateCategory();
 

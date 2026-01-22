@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { useBulkDeleteTransactions } from '@/lib/api/transactions.api';
-import { useUser } from '@/components/providers/user-provider';
+import { useUser } from '@/lib/api/users.api';
 import { toast } from 'sonner';
 import { Trash2 } from 'lucide-react';
 
@@ -25,7 +25,8 @@ interface BulkDeleteDialogProps {
 
 export function BulkDeleteDialog({ selectedIds, onSuccess }: BulkDeleteDialogProps) {
     const [open, setOpen] = React.useState(false);
-    const { userId } = useUser();
+    const { data: userData } = useUser();
+    const { id: userId } = userData?.user || {};
     const bulkDeleteMutation = useBulkDeleteTransactions();
 
     const handleDelete = async () => {
@@ -68,11 +69,7 @@ export function BulkDeleteDialog({ selectedIds, onSuccess }: BulkDeleteDialogPro
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                        onClick={handleDelete}
-                        disabled={bulkDeleteMutation.isPending}
-                        className="bg-destructive hover:bg-destructive/90"
-                    >
+                    <AlertDialogAction onClick={handleDelete} disabled={bulkDeleteMutation.isPending} className="bg-destructive hover:bg-destructive/90">
                         {bulkDeleteMutation.isPending ? 'Deleting...' : 'Delete'}
                     </AlertDialogAction>
                 </AlertDialogFooter>

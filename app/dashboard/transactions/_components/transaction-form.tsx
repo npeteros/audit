@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { useCreateTransaction, useUpdateTransaction } from '@/lib/api/transactions.api';
 import { useCategories } from '@/lib/api/categories.api';
 import { useWallets } from '@/lib/api/wallets.api';
-import { useUser } from '@/components/providers/user-provider';
+import { useUser } from '@/lib/api/users.api';
 import { AddTransactionSchema, EditTransactionSchema } from '@/types/transactions.types';
 import type { TransactionWithDetailsResponse, EditTransactionInput } from '@/types/transactions.types';
 import { toast } from 'sonner';
@@ -29,7 +29,8 @@ interface TransactionFormProps {
 }
 
 export function TransactionForm({ open, onOpenChange, transaction, defaultDate }: TransactionFormProps) {
-    const { userId } = useUser();
+    const { data: userData } = useUser();
+    const { id: userId } = userData?.user || {};
     const createMutation = useCreateTransaction();
     const updateMutation = useUpdateTransaction();
 

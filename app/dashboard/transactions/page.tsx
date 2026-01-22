@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/shared/empty-state';
-import { useUser } from '@/components/providers/user-provider';
+import { useUser } from '@/lib/api/users.api';
 import { useTransactions } from '@/lib/api/transactions.api';
 import { useDeleteTransaction } from '@/lib/api/transactions.api';
 import { TransactionFilters } from './_components/transaction-filters';
@@ -21,7 +21,8 @@ import type { TransactionWithDetailsResponse } from '@/types/transactions.types'
 import type { TransactionType } from '@/lib/prisma/generated/client';
 
 function TransactionsPageComponent() {
-    const { userId } = useUser();
+    const { data: userData } = useUser();
+    const { id: userId } = userData?.user || {};
     const searchParams = useSearchParams();
     const deleteMutation = useDeleteTransaction();
 
