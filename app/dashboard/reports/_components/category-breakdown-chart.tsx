@@ -110,7 +110,7 @@ export function CategoryBreakdownChart({ userId, walletId, startDate, endDate, t
                     <ChartTooltip content={<ChartTooltipContent formatter={(value, name) => (
                         <div className='flex flex-col'>
                             <span className='font-medium'>{name}</span>
-                            <span>{formatCurrency(value)}</span>
+                            <span>{formatCurrency(Number(value))}</span>
                         </div>
                     )} />} />
                     <Pie
