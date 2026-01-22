@@ -10,6 +10,35 @@ import { CalendarIcon } from 'lucide-react';
 import { type DateRange } from 'react-day-picker';
 import { getLast7Days, getLast30Days, getThisMonth, getLastMonth, getThisYear } from '@/lib/utils';
 
+export interface DatePickerProps {
+    date?: Date;
+    onDateChange?: (date: Date | undefined) => void;
+    className?: string;
+    placeholder?: string;
+    disabled?: boolean;
+    align?: 'start' | 'center' | 'end';
+}
+
+export function DatePicker({ date, onDateChange, className, placeholder = 'Pick a date', disabled = false, align = 'start' }: DatePickerProps) {
+    const [isOpen, setIsOpen] = React.useState(false);
+
+    return (
+        <Field className={className}>
+            <Popover open={isOpen} onOpenChange={setIsOpen}>
+                <PopoverTrigger asChild>
+                    <Button variant="outline" disabled={disabled} className="justify-start px-2.5 font-normal">
+                        <CalendarIcon />
+                        {date ? format(date, 'LLL dd, y') : <span>{placeholder}</span>}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align={align}>
+                    <Calendar mode="single" selected={date} onSelect={onDateChange} disabled={disabled} />
+                </PopoverContent>
+            </Popover>
+        </Field>
+    );
+}
+
 export interface DatePickerWithRangeProps {
     value?: DateRange;
     onChange?: (date: DateRange | undefined) => void;
