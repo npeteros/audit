@@ -7,14 +7,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { DatePickerWithRange } from '@/components/ui/date-picker';
 import { useCategories } from '@/lib/api/categories.api';
 import { useWallets } from '@/lib/api/wallets.api';
-import { useUser } from '@/components/providers/user-provider';
+import { useUser } from '@/lib/api/users.api';
 import { getLast30Days } from '@/lib/utils';
 import type { DateRange } from 'react-day-picker';
 
 function TransactionFiltersComponent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { userId } = useUser();
+    const { data: userData } = useUser();
+    const { id: userId } = userData?.user || {};
 
     // Get current filter values from URL
     const walletId = searchParams.get('walletId') || 'all';

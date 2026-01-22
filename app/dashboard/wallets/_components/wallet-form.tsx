@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { useCreateWallet, useUpdateWallet } from '@/lib/api/wallets.api';
-import { useUser } from '@/components/providers/user-provider';
+import { useUser } from '@/lib/api/users.api';
 import { AddWalletSchema, EditWalletSchema } from '@/types/wallets.types';
 import type { WalletWithCountResponse, EditWalletInput, AddWalletInput } from '@/types/wallets.types';
 import { toast } from 'sonner';
@@ -19,7 +19,8 @@ interface WalletFormProps {
 }
 
 export function WalletForm({ open, onOpenChange, wallet }: WalletFormProps) {
-    const { userId } = useUser();
+    const { data: userData } = useUser();
+    const { id: userId } = userData?.user || {};
     const createMutation = useCreateWallet();
     const updateMutation = useUpdateWallet();
 

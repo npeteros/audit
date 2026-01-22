@@ -21,14 +21,15 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useUser } from '@/components/providers/user-provider';
+import { useUser } from '@/lib/api/users.api';
 import { useWallets } from '@/lib/api/wallets.api';
 import { formatCurrency } from '@/lib/utils';
 import { LayoutDashboard, ArrowLeftRight, FolderOpen, Wallet, BarChart3, PiggyBank, Settings, LogOut, ChevronRight, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 
 function DashboardLayoutComponent({ children }: { children: React.ReactNode }) {
-    const { userId, email, avatarUrl, isLoading: userLoading } = useUser();
+    const { data: userData, isLoading: userLoading } = useUser();
+    const { id: userId, email, avatarUrl } = userData?.user || {};
     const searchParams = useSearchParams();
     const router = useRouter();
 

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { type DateRange } from 'react-day-picker';
-import { useUser } from '@/components/providers/user-provider';
+import { useUser } from '@/lib/api/users.api';
 import { useTransactionSummary, useTransactions } from '@/lib/api/transactions.api';
 import { DatePickerWithRange } from '@/components/ui/date-picker';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,7 +18,8 @@ import { toast } from 'sonner';
 import { CategoryIcon } from '@/components/shared/category-icon';
 
 function DashboardPageComponent() {
-    const { userId, isLoading: userLoading } = useUser();
+    const { data: userData, isLoading: userLoading } = useUser();
+    const { id: userId } = userData?.user || {};
     const searchParams = useSearchParams();
     const router = useRouter();
 

@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/shared/empty-state';
-import { useUser } from '@/components/providers/user-provider';
+import { useUser } from '@/lib/api/users.api';
 import { useCategories } from '@/lib/api/categories.api';
 import { useDeleteCategory } from '@/lib/api/categories.api';
 import { CategoryFilters } from './_components/category-filters';
@@ -19,7 +19,8 @@ import type { CategoryWithTransactionCount } from '@/types/categories.types';
 import type { TransactionType } from '@/lib/prisma/generated/client';
 
 function CategoriesPageComponent() {
-    const { userId } = useUser();
+    const { data: userData } = useUser();
+    const { id: userId } = userData?.user || {};
     const searchParams = useSearchParams();
     const deleteMutation = useDeleteCategory();
 
