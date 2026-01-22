@@ -75,13 +75,20 @@ export class CategoryService {
             include: {
                 _count: {
                     select: {
-                        transactions: true,
+                        transactions: {
+                            where: {
+                                userId,
+                            }
+                        },
                     },
                 },
                 transactions: {
                     select: {
                         amount: true,
                     },
+                    where: {
+                        userId,
+                    }
                 },
             },
             orderBy: [{ scope: 'asc' }, { name: 'asc' }],
