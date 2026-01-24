@@ -12,16 +12,23 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/shared/empty-state';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { formatCurrency, getLast30Days } from '@/lib/utils';
-import { TrendingUp, TrendingDown, Activity, ArrowUpCircle, ArrowDownCircle, Inbox } from 'lucide-react';
+import { TrendingUp, TrendingDown, Activity, ArrowUpCircle, ArrowDownCircle, Inbox, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { CategoryIcon } from '@/components/shared/category-icon';
+import { Button } from '@/components/ui/button';
+import { TransactionForm } from '../transactions/_components/transaction-form';
+import { TransactionWithDetailsResponse } from '@/types/transactions.types';
 
 function DashboardPageComponent() {
     const { data: userData, isLoading: userLoading } = useUser();
     const { id: userId } = userData?.user || {};
     const searchParams = useSearchParams();
     const router = useRouter();
+
+    // Form state
+    const [formOpen, setFormOpen] = React.useState(false);
+    const [editingTransaction, setEditingTransaction] = React.useState<TransactionWithDetailsResponse | null>(null);
 
     // Get walletId from URL params (for filtering)
     const walletId = searchParams.get('walletId') || undefined;
@@ -107,6 +114,11 @@ function DashboardPageComponent() {
     if (!userId) {
         return <EmptyState title="Not Authenticated" description="Please log in to view your dashboard." />;
     }
+
+    const handleAdd = () => {
+        setEditingTransaction(null);
+        setFormOpen(true);
+    };
 
     return (
         <div className="space-y-6">
@@ -204,9 +216,15 @@ function DashboardPageComponent() {
 
             {/* Recent Transactions Table */}
             <Card>
-                <CardHeader>
-                    <CardTitle>Recent Transactions</CardTitle>
-                    <CardTitle className="text-xs text-muted-foreground">For selected period</CardTitle>
+                <CardHeader className='flex items-center w-full justify-between'>
+                    <div>
+                        <CardTitle>Recent Transactions</CardTitle>
+                        <CardTitle className="text-xs text-muted-foreground">For selected period</CardTitle>
+                    </div>
+                    <Button onClick={handleAdd} className="flex items-center" size="sm">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Transaction
+                    </Button>
                 </CardHeader>
                 <CardContent>
                     {transactionsLoading ? (
@@ -259,6 +277,8 @@ function DashboardPageComponent() {
                     )}
                 </CardContent>
             </Card>
+
+            <TransactionForm open={formOpen} onOpenChange={setFormOpen} transaction={editingTransaction} />
         </div>
     );
 }
