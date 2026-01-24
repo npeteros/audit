@@ -17,7 +17,7 @@ export default function PricingSection() {
                     <CardContent className="pt-6 text-center space-y-6">
                         <div>
                             <div className="text-5xl md:text-6xl font-bold mb-2">FREE</div>
-                            <p className="text-xl text-muted-foreground">Forever. No Tricks.</p>
+                            <p className="text-xl text-muted-foreground">No Tricks.</p>
                         </div>
 
                         <div className="space-y-3 py-6">

@@ -59,7 +59,7 @@ export default function RootLayout({
                 <body className={`${robotoCondensed.variable}`}>
                     {children}
                     <OneTapComponent />
-                    <div className="fixed bottom-4 right-4">
+                    <div className="fixed top-3 right-4">
                         <ModeToggle />
                     </div>
                     <Toaster />
