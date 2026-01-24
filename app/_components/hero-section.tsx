@@ -25,13 +25,21 @@ export default function HeroSection() {
 
                 {/* Right Column - Dashboard Preview */}
                 <div>
-                    <Card className="rounded-xl overflow-hidden shadow-lg">
+                    <Card className="rounded-xl overflow-hidden shadow-lg p-0">
                         <Image
-                            src="https://placehold.co/1600x900.png"
+                            src="/dashboard-light.png"
                             width={1600}
                             height={900}
                             alt="AuditPH Dashboard Preview"
-                            className="w-full h-auto"
+                            className="w-full h-auto block dark:hidden"
+                            priority
+                        />
+                        <Image
+                            src="/dashboard-dark.png"
+                            width={1600}
+                            height={900}
+                            alt="AuditPH Dashboard Preview"
+                            className="w-full h-auto hidden dark:block"
                             priority
                         />
                     </Card>
