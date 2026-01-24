@@ -26,6 +26,7 @@ import { formatCurrency } from '@/lib/utils';
 import { LayoutDashboard, ArrowLeftRight, FolderOpen, Wallet, BarChart3, PiggyBank, Settings, LogOut, ChevronRight, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 function DashboardLayoutComponent({ children }: { children: React.ReactNode }) {
     const { data: userData, isLoading: userLoading } = useUser();
@@ -200,7 +201,7 @@ function DashboardLayoutComponent({ children }: { children: React.ReactNode }) {
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                                 <SidebarMenuItem>
-                                    <SidebarMenuButton asChild tooltip="Coming Soon">
+                                    <SidebarMenuButton asChild>
                                         <Link href={buildNavUrl('/dashboard/categories')}>
                                             <FolderOpen className="h-4 w-4" />
                                             <span>Categories</span>
@@ -208,7 +209,7 @@ function DashboardLayoutComponent({ children }: { children: React.ReactNode }) {
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                                 <SidebarMenuItem>
-                                    <SidebarMenuButton asChild tooltip="Coming Soon">
+                                    <SidebarMenuButton asChild>
                                         <Link href={buildNavUrl('/dashboard/wallets')}>
                                             <Wallet className="h-4 w-4" />
                                             <span>Wallets</span>
@@ -216,7 +217,7 @@ function DashboardLayoutComponent({ children }: { children: React.ReactNode }) {
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                                 <SidebarMenuItem>
-                                    <SidebarMenuButton asChild tooltip="Coming Soon">
+                                    <SidebarMenuButton asChild>
                                         <Link href={buildNavUrl('/dashboard/reports')}>
                                             <BarChart3 className="h-4 w-4" />
                                             <span>Reports</span>
@@ -224,12 +225,25 @@ function DashboardLayoutComponent({ children }: { children: React.ReactNode }) {
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                                 <SidebarMenuItem>
-                                    <SidebarMenuButton asChild tooltip="Coming Soon">
+                                    <SidebarMenuButton>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild className='w-full'>
+                                                <div className='flex space-x-2 items-center'>
+                                                    <PiggyBank className="h-4 w-4" />
+                                                    <span>Budget</span>
+                                                </div>
+                                            </TooltipTrigger>
+                                            <TooltipContent side='right'>
+                                                <span>Coming Soon!</span>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </SidebarMenuButton>
+                                    {/* <SidebarMenuButton asChild>
                                         <Link href={buildNavUrl('/dashboard/budget')}>
                                             <PiggyBank className="h-4 w-4" />
                                             <span>Budget</span>
                                         </Link>
-                                    </SidebarMenuButton>
+                                    </SidebarMenuButton> */}
                                 </SidebarMenuItem>
                             </SidebarMenu>
                         </SidebarGroupContent>
