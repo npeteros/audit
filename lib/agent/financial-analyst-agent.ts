@@ -1,7 +1,6 @@
 import { stepCountIs, tool, ToolLoopAgent } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import * as tools from './tools';
-import { getAuthenticatedUserId } from './tools/user-tools';
 
 /**
  * AI Agent for analyzing and querying financial expense data
@@ -60,7 +59,9 @@ export const financialAnalystAgent = new ToolLoopAgent({
 - Combine multiple tools when needed to answer complex questions
 
 **Final Note:**
-- When calling the getTransactionsByDateRange tool:
+- Remember to always get the current year using getCurrentDateTime for any date-related queries. Do not assume the current year.
+- If unsure about how to proceed, prioritize using the tools to gather accurate data.
+- If the user asks for something outside your capabilities or scope, politely inform them of your limitations.
 
 Remember: Your goal is to make financial data accessible and understandable through natural conversation.`,
 
@@ -102,7 +103,7 @@ Remember: Your goal is to make financial data accessible and understandable thro
     onStepFinish: ({ toolResults }) => {
         console.log('Agent Step Finished:');
         if (toolResults.length === 0) console.log('No tools were executed in this step.');
-        else console.log(`Tool ${toolResults[0]} executed with result:`, toolResults[0].output);
+        else console.log(`Tool ${toolResults[0].toolName} executed with result:`, toolResults[0].output);
     },
 
     // Allow up to 15 steps for multi-step reasoning and tool calls
