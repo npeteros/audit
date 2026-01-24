@@ -1,7 +1,28 @@
 import { prisma } from '@/lib/prisma';
+import { createClient } from '@/lib/supabase/server';
 import type { AddUserInput, EditUserInput, DeleteUserInput, UserResponse, UserWithDetailsResponse, UserStatsResponse } from '@/types/users.types';
 
 export class UserService {
+    /**
+     * Get the currently logged-in user from Supabase JWT claims
+     * @throws Error if user is not authenticated
+     */
+    async getLoggedUser(): Promise<{ id: string; email: string }> {
+        const supabase = await createClient();
+        const { data, error } = await supabase.auth.getClaims();
+
+        if (error || !data?.claims?.sub) {
+            throw new Error('User not authenticated');
+        }
+
+        const userId = data.claims.sub as string;
+        const email = data.claims.email as string;
+
+        return {
+            id: userId,
+            email: email || '',
+        };
+    }
     async addUser(input: AddUserInput): Promise<UserResponse> {
         const user = await prisma.user.create({
             data: {
