@@ -16,9 +16,11 @@ import { toast } from 'sonner';
 type NavLinkProps = {
     name: string;
     href: string;
+    protected?: boolean;
 };
 
 const navLinks: NavLinkProps[] = [
+    { name: 'Dashboard', href: '/dashboard', protected: true },
     { name: 'Features', href: '/#features' },
     { name: 'How It Works', href: '/#how-it-works' },
     { name: 'Pricing', href: '/#pricing' },
@@ -58,11 +60,14 @@ export default function Navbar() {
 
                 {/* Desktop Navigation Links */}
                 <nav className="hidden md:flex md:items-center md:gap-6 lg:gap-8">
-                    {navLinks.map((link) => (
-                        <Link key={link.name} href={link.href} className="text-sm font-medium text-foreground transition-colors hover:text-foreground">
-                            {link.name}
-                        </Link>
-                    ))}
+                    {navLinks.map(
+                        (link) =>
+                            (!link.protected || (link.protected && userId)) && (
+                                <Link key={link.name} href={link.href} className="text-sm font-medium text-foreground transition-colors hover:text-foreground">
+                                    {link.name}
+                                </Link>
+                            )
+                    )}
                 </nav>
             </div>
 

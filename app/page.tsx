@@ -31,7 +31,7 @@ export default function Page() {
                 <HeroSection />
                 <ProblemsSection />
                 <FeaturesSection />
-                <StatsSection />
+                {/* <StatsSection /> */}
                 <HowItWorksSection />
                 <PricingSection />
                 <CtaSection />
