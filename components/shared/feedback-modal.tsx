@@ -12,8 +12,7 @@ import { EmotionRating } from '@/types/feedback.types';
 
 const STORAGE_KEY = 'feedback_last_submission';
 const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-// const FIVE_MINUTES_MS = 5 * 60 * 1000; // 5 minutes in milliseconds
-const FIVE_MINUTES_MS = 15 * 1000; // 15 seconds in milliseconds for testing
+const FIVE_MINUTES_MS = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 export default function FeedbackModal() {
     const [isOpen, setIsOpen] = useState(false);
@@ -58,10 +57,9 @@ export default function FeedbackModal() {
                 const timeSinceLastSubmission = now - lastSubmissionTime;
 
                 // If less than 24 hours have passed, don't show the modal
-                // commented out to allow testing
-                // if (timeSinceLastSubmission < TWENTY_FOUR_HOURS_MS) {
-                //     return;
-                // }
+                if (timeSinceLastSubmission < TWENTY_FOUR_HOURS_MS) {
+                    return;
+                }
             }
 
             // Start 5-minute timer
